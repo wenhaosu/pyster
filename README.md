@@ -1,2 +1,4 @@
-# pyster
-Automatic test case generator for Python programs
+# Pyster
+
+Pyster is a coverage-driven automatic unit test generator for Python projects.
+
