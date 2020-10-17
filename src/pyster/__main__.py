@@ -21,7 +21,16 @@ if __name__ == "__main__":
         mod_classes.append(m[0])
 
     for c in mod_classes:
-        class_funcs[c] = (inspect.getmembers(getattr(mod, c), inspect.isfunction))
+        for item in inspect.getmembers(getattr(mod, c), inspect.isfunction):
+            if c not in class_funcs.keys():
+                class_funcs[c] = [item]
+            else:
+                class_funcs[c].append(item)
 
-    print(mod_classes)
+    for c in mod_classes:
+        print("== class name: " + c)
+        for m in class_funcs[c]:
+            print("\t== callable name: " + m[0])
+            print("\t\t== signature: " + repr(inspect.signature(m[1])))
+    
     print(class_funcs)

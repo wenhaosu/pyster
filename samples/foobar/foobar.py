@@ -1,17 +1,17 @@
 # Sample Python program including two simple classes
 
 class Foo:
-    def foo_func(self, x):
+    def foo_func(self, x: int) -> int:
         return x * 2
 
-    def get_info(self):
+    def get_info(self) -> str:
         return "Foo Class"
 
 class Bar:
-    def bar_func(self, x):
+    def bar_func(self, x: int) -> int:
         return x / 2
 
-    def get_info(self):
+    def get_info(self) -> str:
         return "Bar Class"
 
 def main():
