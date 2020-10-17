@@ -13,5 +13,15 @@ if __name__ == "__main__":
     sys.path.insert(0, module_path)
     mod = importlib.import_module(module_name)
 
-    # Print all classes inside the module
-    print([m[0] for m in inspect.getmembers(mod, inspect.isclass) if m[1].__module__ == module_name])
+    # Print all classes inside a module / all funcs inside a class
+    mod_classes = []
+    class_funcs = {}
+
+    for m in inspect.getmembers(mod, inspect.isclass):
+        mod_classes.append(m[0])
+
+    for c in mod_classes:
+        class_funcs[c] = (inspect.getmembers(getattr(mod, c), inspect.isfunction))
+
+    print(mod_classes)
+    print(class_funcs)
