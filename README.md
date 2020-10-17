@@ -4,7 +4,7 @@ Pyster is a coverage-driven automatic unit test generator for Python projects.
 
 ## Usage
 ```bash
-python3 src/pyster <dir-to-python-module>
+python3 src/pyster <path-to-python-module>
 ```
 
 ## Concept
