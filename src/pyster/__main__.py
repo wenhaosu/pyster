@@ -1,6 +1,7 @@
 import sys
 import argparse
 from generator.getClassInfo import UserModule
+from generator.coverageDrivenFilter import CoverageDrivenFilter
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
@@ -19,4 +20,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     file_path = args.Path
     module_item = UserModule(file_path)
+    test_filter = CoverageDrivenFilter(module_item)
     print(module_item)
+    test_filter.test_coverage()

@@ -19,6 +19,8 @@ def main():
     bar = Bar()
     print(foo.foo_func(16))
     print(bar.bar_func(16))
+    print(bar.get_info())
+    print(bar.get_info())
 
 if __name__ == "__main__":
     main()
