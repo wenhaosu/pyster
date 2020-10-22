@@ -4,7 +4,23 @@ Pyster is a coverage-driven automatic unit test generator for Python projects.
 
 ## Usage
 ```bash
-python3 src/pyster <path-to-python-module>
+python3 src/pyster <path-to-python-file>
+```
+
+```
+usage: pyster [-h] [--timeout timeout] [--coverage coverage_target] path
+
+Generate Unit Tests
+
+positional arguments:
+  path                  the path to source files
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --timeout timeout     user defined time limit for the program to run in
+                        seconds
+  --coverage coverage_target
+                        target coverage for the generated tests in percentage
 ```
 
 ## Concept
