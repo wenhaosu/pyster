@@ -5,17 +5,17 @@ from generator.getClassInfo import UserModule
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
     parser.add_argument('Path',
-                       metavar='path',
-                       type=str,
-                       help='the path to source files')
+                        metavar='path',
+                        type=str,
+                        help='the path to source files')
     parser.add_argument('Timeout',
-                       metavar='timeout',
-                       type=int,
-                       help='user defined time limit for the program to run in seconds')
+                        metavar='timeout',
+                        type=int,
+                        help='user defined time limit for the program to run in seconds')
     parser.add_argument('Coverage_target',
-                       metavar='coverage_target',
-                       type=int,
-                       help='Target coverage for the generated tests in percentage')
+                        metavar='coverage_target',
+                        type=int,
+                        help='Target coverage for the generated tests in percentage')
     args = parser.parse_args()
     file_path = args.Path
     module_item = UserModule(file_path)

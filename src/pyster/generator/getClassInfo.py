@@ -6,6 +6,7 @@ import sys
 
 from generator.common import indent
 
+
 class UserClass(object):
     def __init__(self, module_obj: any, class_name: str):
         self.class_module = module_obj
@@ -15,8 +16,9 @@ class UserClass(object):
     def __str__(self, ind=0):
         ret_str = indent(ind) + "== class name: " + self.class_name + "\n"
         for m in self.class_funcs:
-            ret_str += indent(ind+1) + "== callable name: " + m[0] + "\n"
-            ret_str += indent(ind+2) + "== signature: " + repr(inspect.signature(m[1])) + "\n"
+            ret_str += indent(ind + 1) + "== callable name: " + m[0] + "\n"
+            ret_str += indent(ind + 2) + "== signature: " + repr(
+                inspect.signature(m[1])) + "\n"
         return ret_str
 
     def parse_class(self):
@@ -26,7 +28,9 @@ class UserClass(object):
             logging.exception("message")
         else:
             # Get all function objects from a class
-            for func in inspect.getmembers(getattr(self.class_module, self.class_name), inspect.isfunction):
+            for func in inspect.getmembers(
+                    getattr(self.class_module, self.class_name),
+                    inspect.isfunction):
                 self.class_funcs.append(func)
 
 
@@ -53,9 +57,9 @@ class UserModule(object):
             # Store module path and module name
             delimiter = self.abs_path.rfind('/')
             self.module_path = self.abs_path[0:delimiter]
-            self.module_name = self.abs_path[delimiter+1:-3]
+            self.module_name = self.abs_path[delimiter + 1:-3]
 
-            # Import the file as module and retrive all class names
+            # Import the file as module and retrieve all class names
             sys.path.insert(0, self.module_path)
             mod = importlib.import_module(self.module_name)
             class_temp = []
