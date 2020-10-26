@@ -1,6 +1,7 @@
-import sys
 import argparse
+import logging
 from generator.getClassInfo import UserModule
+from generator.generateRandomInput import TestCase
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
@@ -24,5 +25,27 @@ if __name__ == '__main__':
     print("timeout: " + str(args.timeout))
     print("coverage_target: " + str(args.coverage))
 
-    module_item = UserModule(file_path)
-    print(module_item)
+    try:
+        module_item = UserModule(file_path)
+        print(module_item)
+
+        # code for getting a dict of generated tests
+        ret_dict = {'module_name': module_item.module_name,
+                    'classes': []}
+
+        for c_name, c_obj in module_item.module_classes.items():
+            class_dict = {'class_name': c_name,
+                          'funcs': []}
+            for f in c_obj.class_funcs:
+                func_dict = {'func_name': f[0],
+                             'tests': []}
+                tc = TestCase(getattr(module_item.mod, c_name), f)
+                for i in range(5):
+                    tc_dict = tc.generate_random_test()
+                    func_dict['tests'].append(tc_dict)
+                class_dict['funcs'].append(func_dict)
+            ret_dict['classes'].append(class_dict)
+
+        print(ret_dict)
+    except Exception as e:
+        logging.exception(e)
