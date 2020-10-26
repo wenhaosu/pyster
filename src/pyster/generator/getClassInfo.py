@@ -12,6 +12,9 @@ class UserClass(object):
         self.class_module = module_obj
         self.class_name = class_name
         self.class_funcs = []
+        self.class_init = None
+        self.class_funcs_obj = []
+        self.class_init_obj = None
 
     def __str__(self, ind=0):
         ret_str = indent(ind) + "== class name: " + self.class_name + "\n"
@@ -28,10 +31,14 @@ class UserClass(object):
             logging.exception("message")
         else:
             # Get all function objects from a class
-            for func in inspect.getmembers(
-                    getattr(self.class_module, self.class_name),
-                    inspect.isfunction):
-                self.class_funcs.append(func)
+            attrs = getattr(self.class_module, self.class_name)
+            for func in inspect.getmembers(attrs, inspect.isfunction):
+                if func[0] == '__init__':
+                    self.class_init = func
+                    self.class_init_obj = getattr(attrs, '__init__')
+                else:
+                    self.class_funcs.append(func)
+                    self.class_funcs_obj.append(getattr(attrs, func[0]))
 
 
 class UserModule(object):
@@ -40,6 +47,7 @@ class UserModule(object):
         self.module_path = ""
         self.module_name = ""
         self.module_classes = {}
+        self.mod = None
         self.parse_module()
 
     def __str__(self, ind=0):
@@ -61,12 +69,12 @@ class UserModule(object):
 
             # Import the file as module and retrieve all class names
             sys.path.insert(0, self.module_path)
-            mod = importlib.import_module(self.module_name)
+            self.mod = importlib.import_module(self.module_name)
             class_temp = []
-            for m in inspect.getmembers(mod, inspect.isclass):
+            for m in inspect.getmembers(self.mod, inspect.isclass):
                 class_temp.append(m[0])
 
             # Fill in self.module_classes with UserClass objects
             for c in class_temp:
-                self.module_classes[c] = UserClass(mod, c)
+                self.module_classes[c] = UserClass(self.mod, c)
                 self.module_classes[c].parse_class()

@@ -1,6 +1,7 @@
 import sys
 import argparse
 from generator.getClassInfo import UserModule
+from generator.generateRandomInput import TestCase
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
@@ -26,3 +27,10 @@ if __name__ == '__main__':
 
     module_item = UserModule(file_path)
     print(module_item)
+
+    print(getattr(getattr(module_item.mod, 'Foo'), '__init__'))
+    test_case = TestCase(getattr(getattr(module_item.mod, 'Foo'), '__init__'),
+                         getattr(getattr(module_item.mod, 'Foo'), 'foo_func'),
+                         module_item.module_classes['Foo'].class_funcs[0])
+    test_case.generate_random_test()
+
