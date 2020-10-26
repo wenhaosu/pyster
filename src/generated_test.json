@@ -1,0 +1,73 @@
+{
+  "module_name": "foobar",
+  "classes": [
+    {
+      "class_name": "Foo",
+      "funcs": [
+        {
+          "func_name": "foo_func",
+          "tests": [
+            {
+              "args": [
+                0
+              ],
+              "ret": 0
+            },
+            {
+              "args": [
+                1
+              ],
+              "ret": 1
+            }
+          ]
+        },
+        {
+          "func_name": "get_info",
+          "tests": [
+            {
+              "args": [],
+              "ret": "Foo Class"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_name": "Bar",
+      "funcs": [
+        {
+          "func_name": "bar_func",
+          "tests": [
+            {
+              "args": [
+                0
+              ],
+              "ret": 0
+            },
+            {
+              "args": [
+                1
+              ],
+              "ret": 0.5
+            },
+            {
+              "args": [
+                2
+              ],
+              "ret": 1
+            }
+          ]
+        },
+        {
+          "func_name": "get_info",
+          "tests": [
+            {
+              "args": [],
+              "ret": "Bar Class"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
