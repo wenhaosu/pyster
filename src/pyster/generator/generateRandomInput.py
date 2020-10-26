@@ -33,19 +33,27 @@ def generate_random_value(param_type: str):
 
 
 class TestCase(object):
-    def __init__(self, class_init: any, func: any, func_sig: any):
+    def __init__(self, class_init: any, func_sig: any):
         self.class_init = class_init
-        self.target_func = func
         self.target_func_sig = func_sig
 
     def generate_random_test(self) -> dict:
         arg_arr = []
         sig_str = repr(inspect.signature(self.target_func_sig[1]))
-        sig_str = sig_str[sig_str.index('(') + 1: sig_str.index(')')]
-        print(sig_str.split(', '))
-        print("Random bool: " + str(generate_random_value('bool')))
-        print("Random int: " + str(generate_random_value('int')))
-        print("Random string: " + generate_random_value('string'))
+        sig_vec = sig_str[sig_str.index('(') + 1: sig_str.index(')')].split(', ')
 
-        ret_val = {'func_name': self.target_func_sig[0]}
-        return ret_val
+        for param in sig_vec:
+            if param == 'self':
+                continue
+            idx = param.find(':')
+            if idx == -1:
+                raise Exception("Type of parameter not defined")
+            param_type = param[idx+1:]
+            arg_arr.append(generate_random_value(param_type))
+
+        class_item = self.class_init()
+        ret_val = getattr(class_item, self.target_func_sig[0])(*arg_arr)
+
+        test_info = {'args': arg_arr, 'ret': ret_val}
+
+        return test_info

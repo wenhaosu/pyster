@@ -13,8 +13,6 @@ class UserClass(object):
         self.class_name = class_name
         self.class_funcs = []
         self.class_init = None
-        self.class_funcs_obj = []
-        self.class_init_obj = None
 
     def __str__(self, ind=0):
         ret_str = indent(ind) + "== class name: " + self.class_name + "\n"
@@ -35,10 +33,8 @@ class UserClass(object):
             for func in inspect.getmembers(attrs, inspect.isfunction):
                 if func[0] == '__init__':
                     self.class_init = func
-                    self.class_init_obj = getattr(attrs, '__init__')
                 else:
                     self.class_funcs.append(func)
-                    self.class_funcs_obj.append(getattr(attrs, func[0]))
 
 
 class UserModule(object):

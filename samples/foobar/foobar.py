@@ -25,8 +25,8 @@ class Bar:
     def get_info(self) -> str:
         return self.info
 
-    def call_bar_obj(self, obj: Foo) -> str:
-        return self.get_info() + " has a " + obj.get_info()
+    # def call_bar_obj(self, obj: Foo) -> str:
+    #     return self.get_info() + " has a " + obj.get_info()
 
 
 def main():
