@@ -23,18 +23,13 @@ class UserClass(object):
         return ret_str
 
     def parse_class(self):
-        try:
-            self.class_module in sys.modules
-        except ModuleNotFoundError:
-            logging.exception("message")
-        else:
-            # Get all function objects from a class
-            attrs = getattr(self.class_module, self.class_name)
-            for func in inspect.getmembers(attrs, inspect.isfunction):
-                if func[0] == '__init__':
-                    self.class_init = func
-                else:
-                    self.class_funcs.append(func)
+        # Get all function objects from a class
+        attrs = getattr(self.class_module, self.class_name)
+        for func in inspect.getmembers(attrs, inspect.isfunction):
+            if func[0] == '__init__':
+                self.class_init = func
+            else:
+                self.class_funcs.append(func)
 
 
 class UserModule(object):

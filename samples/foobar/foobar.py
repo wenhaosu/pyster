@@ -34,7 +34,6 @@ def main():
     bar = Bar()
     print(foo.foo_func(16))
     print(bar.bar_func(16))
-    print(bar.call_bar_obj(foo))
 
 
 if __name__ == "__main__":
