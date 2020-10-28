@@ -22,7 +22,7 @@ def generate_random_value(param_type: str):
         choices = range(2)
         value_length = 1
     else:
-        raise Exception("Type not defined")
+        raise Exception("Type not defined for " + param_type)
 
     return merge_raw(param_type)(random.choices(choices, k=value_length))
 
@@ -43,7 +43,7 @@ class TestCase(object):
             idx = param.find(':')
             if idx == -1:
                 raise Exception("Type of parameter not defined")
-            param_type = param[idx + 1:]
+            param_type = param[idx + 1:].strip()
             arg_arr.append(generate_random_value(param_type))
 
         class_item = self.class_init()
