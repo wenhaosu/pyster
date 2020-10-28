@@ -2,6 +2,7 @@ import argparse
 import logging
 from generator.getClassInfo import UserModule
 from generator.generateRandomInput import TestCase
+from generator.testFileGenerator import TestFileGenerator
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
@@ -33,6 +34,8 @@ if __name__ == '__main__':
         ret_dict = {'module_name': module_item.module_name,
                     'classes': []}
 
+        generater = TestFileGenerator()
+
         for c_name, c_obj in module_item.module_classes.items():
             class_dict = {'class_name': c_name,
                           'funcs': []}
@@ -46,6 +49,10 @@ if __name__ == '__main__':
                 class_dict['funcs'].append(func_dict)
             ret_dict['classes'].append(class_dict)
 
-        print(ret_dict)
+        print (class_dict)
+        generater.dump(class_dict)
+        generater.write_to_file(module_item.module_path +  '/' + c_name + 'Test.py')
+
+        #print(ret_dict)
     except Exception as e:
         logging.exception(e)
