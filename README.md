@@ -23,6 +23,14 @@ optional arguments:
                         target coverage for the generated tests in percentage
 ```
 
+## Test on existing samples
+```bash
+git submodule update --init --recursive
+cd samples
+./applyPatch.sh
+```
+
+
 ## Concept
 * Use built-in Python functions to obtain all methods in a Python class.
 * According to the methods input, randomly generate an object instance and function arguments, with special inputs (`0`, `-1` for integers, `[]` for lists and `None` for objects also into consideration). Use `coverage.py` third-party library to get the coverage rate increment after calling the randomly generated function call.
