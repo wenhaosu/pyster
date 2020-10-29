@@ -24,7 +24,8 @@ class TestFileGenerator:
             indent(2) + class_name.lower() + ' = ' + class_name + '()')
 
     def dump_assert(self, test, function_name, instance_name):
-        call_code = self.gen_call(test['args'], function_name, instance_name)
+        call_code = self.gen_call(test['func_args'], function_name,
+                                  instance_name)
         self.output.append(
             indent(2) + 'self.assertEqual({}, {})'.format(call_code, gen_str(
                 test['ret'])))

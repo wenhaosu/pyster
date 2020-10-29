@@ -4,7 +4,7 @@ import random
 
 def merge_raw(param_type: str):
     merge_funcs = {
-        "string": lambda x: ''.join([chr(val) for val in x]),
+        "str": lambda x: ''.join([chr(val) for val in x]),
         "int": lambda x: int(''.join([str(val) for val in x])),
         "bool": lambda x: True if x[0] == 0 else False
     }
@@ -14,7 +14,7 @@ def merge_raw(param_type: str):
 def generate_random_value(param_type: str):
     choices = range(0, 10)
     value_length = random.randint(1, 32)
-    if param_type == 'string':
+    if param_type == 'str':
         choices = range(ord('a'), ord('z') + 1)
     elif param_type == 'int':
         value_length = random.randint(1, 9)
@@ -27,26 +27,53 @@ def generate_random_value(param_type: str):
     return merge_raw(param_type)(random.choices(choices, k=value_length))
 
 
+def extract_sig_vec(sig_obj: any):
+    sig = repr(inspect.signature(sig_obj[1]))
+    # Do not return 'self' in sig vec
+    return sig[sig.index('(') + 1: sig.index(')')].split(', ')[1:]
+
+
+def convert_arg_type(param_type: str, param: str):
+    if param_type == 'str':
+        return param
+    if param_type == 'int':
+        return int(param)
+    if param_type == 'bool':
+        return param == 'True'
+
+
+def fill_param_array(sig_vec: any):
+    arr = []
+    for param in sig_vec:
+        idx = param.find(':')
+        if idx == -1:
+            raise Exception("Type of parameter not defined")
+        param_type = param[idx + 1:].strip()
+        idx = param_type.find('=')
+        if idx == -1:
+            arr.append(generate_random_value(param_type))
+        else:
+            default_val = param_type[idx + 1:].strip()
+            param_type = param_type[:idx]
+            if random.choice([True, False]):
+                arr.append(generate_random_value(param_type))
+            else:
+                arr.append(convert_arg_type(param_type, default_val))
+    return arr
+
+
 class TestCase(object):
-    def __init__(self, class_init: any, func_sig: any):
+    def __init__(self, class_init: any, init_sig: any, func_sig: any):
         self.class_init = class_init
         self.target_func_sig = func_sig
+        self.init_sig_vec = extract_sig_vec(init_sig)
+        self.func_sig_vec = extract_sig_vec(func_sig)
 
     def generate_random_test(self) -> dict:
-        arg_arr = []
-        sig = repr(inspect.signature(self.target_func_sig[1]))
-        sig_vec = sig[sig.index('(') + 1: sig.index(')')].split(', ')
+        init_arr = fill_param_array(self.init_sig_vec)
+        arg_arr = fill_param_array(self.func_sig_vec)
 
-        for param in sig_vec:
-            if param == 'self':
-                continue
-            idx = param.find(':')
-            if idx == -1:
-                raise Exception("Type of parameter not defined")
-            param_type = param[idx + 1:].strip()
-            arg_arr.append(generate_random_value(param_type))
-
-        class_item = self.class_init()
+        class_item = self.class_init(*init_arr)
         ret_val = getattr(class_item, self.target_func_sig[0])(*arg_arr)
 
-        return {'args': arg_arr, 'ret': ret_val}
+        return {'init_args': init_arr, 'func_args': arg_arr, 'ret': ret_val}
