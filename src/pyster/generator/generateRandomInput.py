@@ -53,6 +53,8 @@ def fill_param_array(sig_vec: any):
         if idx == -1:
             arr.append(generate_random_value(param_type))
         else:
+            # When we have a default value for an argument,
+            # there's 50% chance to directly use that argument
             default_val = param_type[idx + 1:].strip()
             param_type = param_type[:idx]
             if random.choice([True, False]):
