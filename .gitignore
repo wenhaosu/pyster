@@ -130,3 +130,6 @@ dmypy.json
 
 # IDE folders
 .idea/
+
+# Temp generated test files
+*Test.py
