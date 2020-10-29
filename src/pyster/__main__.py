@@ -40,7 +40,8 @@ if __name__ == '__main__':
             for f in c_obj.class_funcs:
                 func_dict = {'func_name': f[0],
                              'tests': []}
-                tc = TestCase(getattr(module_item.mod, c_name), f)
+                tc = TestCase(getattr(module_item.mod, c_name),
+                              c_obj.class_init, f)
                 for i in range(5):
                     tc_dict = tc.generate_random_test()
                     func_dict['tests'].append(tc_dict)

@@ -1,11 +1,11 @@
 # Sample Python program including two simple classes
 
 class Foo:
-    def __init__(self):
+    def __init__(self, info: str):
         self.res = 0
-        self.info = "Foo Class"
+        self.info = info
 
-    def foo_func(self, x: int) -> int:
+    def foo_func(self, x: int = 2) -> int:
         self.res = x * 2
         return self.res
 
@@ -30,7 +30,7 @@ class Bar:
 
 
 def main():
-    foo = Foo()
+    foo = Foo('Foo Class')
     bar = Bar()
     print(foo.foo_func(16))
     print(bar.bar_func(16))

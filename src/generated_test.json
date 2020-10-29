@@ -2,22 +2,45 @@
   "module_name": "foobar",
   "classes": [
     {
-      "class_name": "Foo",
+      "lass_name": "Bar",
       "funcs": [
         {
-          "func_name": "foo_func",
+          "func_name": "bar_func",
           "tests": [
             {
-              "args": [
-                0
+              "init_args": [],
+              "func_args": [
+                38330
               ],
-              "ret": 0
+              "ret": 19165.0
             },
             {
-              "args": [
-                1
+              "init_args": [],
+              "func_args": [
+                7485287
               ],
-              "ret": 1
+              "ret": 3742643.5
+            },
+            {
+              "init_args": [],
+              "func_args": [
+                96535
+              ],
+              "ret": 48267.5
+            },
+            {
+              "init_args": [],
+              "func_args": [
+                726
+              ],
+              "ret": 363.0
+            },
+            {
+              "init_args": [],
+              "func_args": [
+                362008
+              ],
+              "ret": 181004.0
             }
           ]
         },
@@ -25,36 +48,84 @@
           "func_name": "get_info",
           "tests": [
             {
-              "args": [],
-              "ret": "Foo Class"
+              "init_args": [],
+              "func_args": [],
+              "ret": "Bar Class"
+            },
+            {
+              "init_args": [],
+              "func_args": [],
+              "ret": "Bar Class"
+            },
+            {
+              "init_args": [],
+              "func_args": [],
+              "ret": "Bar Class"
+            },
+            {
+              "init_args": [],
+              "func_args": [],
+              "ret": "Bar Class"
+            },
+            {
+              "init_args": [],
+              "func_args": [],
+              "ret": "Bar Class"
             }
           ]
         }
       ]
     },
     {
-      "class_name": "Bar",
+      "class_name": "Foo",
       "funcs": [
         {
-          "func_name": "bar_func",
+          "func_name": "foo_func",
           "tests": [
             {
-              "args": [
-                0
+              "init_args": [
+                "cinprowxaovdjsclmsbownwfqwmnml"
               ],
-              "ret": 0
+              "func_args": [
+                236
+              ],
+              "ret": 472
             },
             {
-              "args": [
-                1
+              "init_args": [
+                "alleyntytovvrl"
               ],
-              "ret": 0.5
+              "func_args": [
+                35200
+              ],
+              "ret": 70400
             },
             {
-              "args": [
+              "init_args": [
+                "rheholljgaeyqsbmpezwlevzqpmjbeq"
+              ],
+              "func_args": [
+                7
+              ],
+              "ret": 14
+            },
+            {
+              "init_args": [
+                "bnigttcmvpwhrkcawsfsdzfbdkit"
+              ],
+              "func_args": [
+                7809400
+              ],
+              "ret": 15618800
+            },
+            {
+              "init_args": [
+                "vcufbnxmyqngxzxipjdqczdvxu"
+              ],
+              "func_args": [
                 2
               ],
-              "ret": 1
+              "ret": 4
             }
           ]
         },
@@ -62,8 +133,39 @@
           "func_name": "get_info",
           "tests": [
             {
-              "args": [],
-              "ret": "Bar Class"
+              "init_args": [
+                "tdmcpfch"
+              ],
+              "func_args": [],
+              "ret": "tdmcpfch"
+            },
+            {
+              "init_args": [
+                "vpjkpnitwdmbvixbezk"
+              ],
+              "func_args": [],
+              "ret": "vpjkpnitwdmbvixbezk"
+            },
+            {
+              "init_args": [
+                "cmlwjchtyxfxcskchmnhxgnnsus"
+              ],
+              "func_args": [],
+              "ret": "cmlwjchtyxfxcskchmnhxgnnsus"
+            },
+            {
+              "init_args": [
+                "bbigfofwukvtlynxstnni"
+              ],
+              "func_args": [],
+              "ret": "bbigfofwukvtlynxstnni"
+            },
+            {
+              "init_args": [
+                "bxokcaqmwktqjir"
+              ],
+              "func_args": [],
+              "ret": "bxokcaqmwktqjir"
             }
           ]
         }
