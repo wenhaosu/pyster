@@ -8,9 +8,9 @@ def gen_str(value):
 
 
 class TestFileGenerator:
-    def __init__(self):
+    def __init__(self, module_name, class_name):
         self.output = []
-        self.imports = [('unittest',)]
+        self.imports = [('unittest',), (class_name, module_name)]
 
     def gen_call(self, args, function_name, instance_name):
         call_code = instance_name + '.' + function_name + '('
@@ -24,7 +24,7 @@ class TestFileGenerator:
         
     def dump_assert(self, test, function_name, instance_name):
         call_code = self.gen_call(test['args'], function_name, instance_name)
-        self.output.append(indent(2) + 'self.assertEquals({}, {})'.format(call_code, gen_str(test['ret'])))
+        self.output.append(indent(2) + 'self.assertEqual({}, {})'.format(call_code, gen_str(test['ret'])))
 
     def dump_function(self, function_info, class_name):
         self.output.append(indent(1) + 'def test_{}(self):'.format(function_info['func_name']))
@@ -47,6 +47,8 @@ class TestFileGenerator:
         for imp in self.imports:
             if len(imp) == 1:
                 self.output.append('import ' + imp[0])
+            if len(imp) == 2:
+                self.output.append('from ' + imp[1] + ' import ' + imp[0])
         self.output.append('')
         self.output.append('')
     

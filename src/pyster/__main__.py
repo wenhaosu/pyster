@@ -34,7 +34,6 @@ if __name__ == '__main__':
         ret_dict = {'module_name': module_item.module_name,
                     'classes': []}
 
-        generater = TestFileGenerator()
 
         for c_name, c_obj in module_item.module_classes.items():
             class_dict = {'class_name': c_name,
@@ -50,6 +49,8 @@ if __name__ == '__main__':
             ret_dict['classes'].append(class_dict)
 
         print (class_dict)
+
+        generater = TestFileGenerator(module_item.module_name, c_name)
         generater.dump(class_dict)
         generater.write_to_file(module_item.module_path +  '/' + c_name + 'Test.py')
 

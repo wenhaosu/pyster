@@ -1,22 +1,23 @@
 import unittest
+from foobar import Foo
 
 
 class FooTest(unittest.TestCase):
 	def test_foo_func(self):
 		foo = Foo()
-		self.assertEquals(foo.foo_func(78595), 157190)
-		self.assertEquals(foo.foo_func(699235148), 1398470296)
-		self.assertEquals(foo.foo_func(412), 824)
-		self.assertEquals(foo.foo_func(8133), 16266)
-		self.assertEquals(foo.foo_func(4827), 9654)
+		self.assertEqual(foo.foo_func(3), 6)
+		self.assertEqual(foo.foo_func(52696876), 105393752)
+		self.assertEqual(foo.foo_func(198), 396)
+		self.assertEqual(foo.foo_func(64), 128)
+		self.assertEqual(foo.foo_func(36929), 73858)
 
 	def test_get_info(self):
 		foo = Foo()
-		self.assertEquals(foo.get_info(), 'Foo Class')
-		self.assertEquals(foo.get_info(), 'Foo Class')
-		self.assertEquals(foo.get_info(), 'Foo Class')
-		self.assertEquals(foo.get_info(), 'Foo Class')
-		self.assertEquals(foo.get_info(), 'Foo Class')
+		self.assertEqual(foo.get_info(), 'Foo Class')
+		self.assertEqual(foo.get_info(), 'Foo Class')
+		self.assertEqual(foo.get_info(), 'Foo Class')
+		self.assertEqual(foo.get_info(), 'Foo Class')
+		self.assertEqual(foo.get_info(), 'Foo Class')
 
 
 if __name__ == "__main__":
