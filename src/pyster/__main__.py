@@ -34,7 +34,6 @@ if __name__ == '__main__':
         ret_dict = {'module_name': module_item.module_name,
                     'classes': []}
 
-
         for c_name, c_obj in module_item.module_classes.items():
             class_dict = {'class_name': c_name,
                           'funcs': []}
@@ -48,12 +47,12 @@ if __name__ == '__main__':
                 class_dict['funcs'].append(func_dict)
             ret_dict['classes'].append(class_dict)
 
-        print (class_dict)
+            print(class_dict)
 
-        generater = TestFileGenerator(module_item.module_name, c_name)
-        generater.dump(class_dict)
-        generater.write_to_file(module_item.module_path +  '/' + c_name + 'Test.py')
+            generator = TestFileGenerator(module_item.module_name, c_name)
+            generator.dump(class_dict)
+            generator.write_to_file(
+                module_item.module_path + '/' + c_name + 'Test.py')
 
-        #print(ret_dict)
     except Exception as e:
         logging.exception(e)

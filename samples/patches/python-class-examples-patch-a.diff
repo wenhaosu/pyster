@@ -1,0 +1,55 @@
+diff --git a/bank.py b/bank.py
+index 332b1e6..27d6294 100644
+--- a/bank.py
++++ b/bank.py
+@@ -1,17 +1,21 @@
+-class BankAccount():
+-  def __init__(self, kind):
+-    self.kind = kind
+-    self.balance = 0
+-    self.overdraft_fees = 0
+-  
+-  def deposit(self, amount):
+-    self.balance += amount
+-  
+-  def withdraw(self, amount):
+-    self.balance -= amount
+-    if (self.balance < 0):
+-      self.overdraft_fees += 20
+-    return amount
++class BankAccount:
++    def __init__(self, kind: str):
++        self.kind = kind
++        self.balance = 0
++        self.overdraft_fees = 0
++
++    def deposit(self, amount: int):
++        self.balance += amount
++
++    def withdraw(self, amount: int):
++        self.balance -= amount
++        if self.balance < 0:
++            self.overdraft_fees += 20
++        return amount
++
++    def status(self):
++        return self.kind
++
+ 
+ savings = BankAccount("savings")
+ checking = BankAccount("checking")
+@@ -23,12 +27,12 @@ print()
+ wages = 800
+ savings.deposit(wages)
+ 
+-
+ cash = savings.withdraw(150)
+ checking.deposit(cash)
+ 
+ print("I deposited ${} into my {} account.".format(wages, savings.kind))
+-print("I transferred ${} from {} to {}.".format(cash, savings.kind, checking.kind))
++print("I transferred ${} from {} to {}.".format(cash, savings.kind,
++                                                checking.kind))
+ print()
+ 
+ print("My {} account now has ${}.".format(savings.kind, savings.balance))

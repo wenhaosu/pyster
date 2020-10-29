@@ -14,7 +14,7 @@ class UserClass(object):
         self.class_funcs = []
         self.class_init = None
 
-    def __str__(self, ind=0):
+    def __str__(self, ind: int = 0):
         ret_str = indent(ind) + "== class name: " + self.class_name + "\n"
         for m in self.class_funcs:
             ret_str += indent(ind + 1) + "== callable name: " + m[0] + "\n"
@@ -41,7 +41,7 @@ class UserModule(object):
         self.mod = None
         self.parse_module()
 
-    def __str__(self, ind=0):
+    def __str__(self, ind: int = 0):
         ret_str = indent(ind) + "== module name: " + self.module_name + "\n"
         for _, v in self.module_classes.items():
             ret_str += v.__str__(1)
