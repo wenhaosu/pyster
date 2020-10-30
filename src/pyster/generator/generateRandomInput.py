@@ -22,7 +22,7 @@ def generate_random_value(param_type: str):
         choices = range(2)
         value_length = 1
     else:
-        raise Exception("Type not defined for " + param_type)
+        raise Exception("Type not defined for:" + param_type + ':')
 
     return merge_raw(param_type)(random.choices(choices, k=value_length))
 
@@ -56,7 +56,7 @@ def fill_param_array(sig_vec: any):
             # When we have a default value for an argument,
             # there's 50% chance to directly use that argument
             default_val = param_type[idx + 1:].strip()
-            param_type = param_type[:idx]
+            param_type = param_type[:idx].strip()
             if random.choice([True, False]):
                 arr.append(generate_random_value(param_type))
             else:

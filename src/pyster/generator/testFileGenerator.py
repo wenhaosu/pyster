@@ -19,9 +19,11 @@ class TestFileGenerator:
         call_code += ')'
         return call_code
 
-    def dump_init(self, class_name):
-        self.output.append(
-            indent(2) + class_name.lower() + ' = ' + class_name + '()')
+    def dump_init(self, class_name, args):
+        init_code = class_name.lower() + ' = ' + class_name + '('
+        init_code += ','.join([gen_str(arg) for arg in args])
+        init_code += ')'
+        self.output.append(indent(2) + init_code)
 
     def dump_assert(self, test, function_name, instance_name):
         call_code = self.gen_call(test['func_args'], function_name,
@@ -33,8 +35,8 @@ class TestFileGenerator:
     def dump_function(self, function_info, class_name):
         self.output.append(indent(1) + 'def test_{}(self):'.format(
             function_info['func_name']))
-        self.dump_init(class_name)
         for test in function_info['tests']:
+            self.dump_init(class_name, test['init_args'])
             self.dump_assert(test, function_info['func_name'],
                              class_name.lower())
 
