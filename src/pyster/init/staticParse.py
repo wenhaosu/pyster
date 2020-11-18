@@ -17,6 +17,8 @@ class UserClass(object):
     def __str__(self, ind: int = 0):
         ret_str = indent(ind) + "== class name: " + self.class_name + "\n"
         for m in [self.class_init, *self.class_funcs]:
+            if m is None:
+                return ret_str
             ret_str += indent(ind + 1) + "== callable name: " + m[0] + "\n"
             ret_str += indent(ind + 2) + "== signature: " + repr(
                 inspect.signature(m[1])) + "\n"
