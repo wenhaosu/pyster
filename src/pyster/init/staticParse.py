@@ -57,13 +57,9 @@ class UserModule(object):
             logging.exception("message")
         else:
             # Store module path and module name
-            delimiter = self.abs_path.rfind('/')
-            self.module_path = self.abs_path[0:delimiter]
-            self.module_name = self.abs_path[delimiter + 1:-3]
-            delimiter = self.module_path.rfind('/')
-            self.module_name = self.module_path[
-                               delimiter + 1:] + '.' + self.module_name
-            self.module_path = self.module_path[0:delimiter]
+            deli = self.abs_path.rfind('/', 0, self.abs_path.rfind('/'))
+            self.module_path = self.abs_path[0:deli]
+            self.module_name = self.abs_path[deli + 1:].replace('/', '.')[:-3]
 
             # Import the file as module and retrieve all class names
             sys.path.insert(0, self.module_path)
@@ -72,7 +68,8 @@ class UserModule(object):
             config.add_module([self.module_name])
             class_temp = []
             for m in inspect.getmembers(self.mod, inspect.isclass):
-                if str(m[1]).split("'")[1].rsplit('.', 1)[0] == self.module_name:
+                curr_module = str(m[1]).split("'")[1].rsplit('.', 1)[0]
+                if curr_module == self.module_name:
                     class_temp.append(m[0])
 
             # Fill in self.module_classes with UserClass objects

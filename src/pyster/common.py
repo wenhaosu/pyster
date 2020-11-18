@@ -54,10 +54,17 @@ class ConfigObject(object):
             self.config[module_name][class_name][func_name].append(
                 {arg_type: ""})
 
+            # TODO: Use type directly instead of parsing a string
             if '=' in arg:
-                self.add_default_val(
-                    [module_name, class_name, func_name, counter, arg_type],
-                    arg[arg.find('= ') + 2:], sub_type)
+                if ':' in arg:
+                    self.add_default_val(
+                        [module_name, class_name, func_name, counter, arg_type],
+                        arg[arg.find('= ') + 2:], sub_type)
+                else:
+                    self.add_default_val(
+                        [module_name, class_name, func_name, counter,
+                         arg_type],
+                        arg[arg.find('=') + 1:], sub_type)
             counter += 1
 
     def add_default_val(self, def_info, default_val, sub_type='any'):
