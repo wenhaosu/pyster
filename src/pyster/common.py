@@ -10,15 +10,25 @@ class ConfigObject(object):
     def __init__(self, path: str):
         self.config = {}
         self.path = path
+        if self.path[0] != '/':
+            self.path = os.path.abspath(self.path)
+        self.dir = self.path.rsplit('/', 1)[0] + '/.pyster'
+        self.name = self.path.rsplit('/', 1)[1][:-3] + '.json'
 
     def __str__(self):
-        return json.dumps(self.config, indent=4)
+        return str(self.config)
 
     def read_from_config(self):
-        pass
+        if not os.path.exists(os.path.join(self.dir, self.name)):
+            raise FileNotFoundError
+        with open(os.path.join(self.dir, self.name)) as json_file:
+            self.config = json.load(json_file)
 
     def dump_to_config(self):
-        pass
+        if not os.path.exists(os.path.join(self.dir)):
+            os.makedirs(os.path.join(self.dir))
+        with open(os.path.join(self.dir, self.name), 'w') as of:
+            json.dump(self.config, of)
 
     def add_module(self, module_info: list):
         [module_name] = module_info
@@ -58,7 +68,8 @@ class ConfigObject(object):
             if '=' in arg:
                 if ':' in arg:
                     self.add_default_val(
-                        [module_name, class_name, func_name, counter, arg_type],
+                        [module_name, class_name, func_name, counter,
+                         arg_type],
                         arg[arg.find('= ') + 2:], sub_type)
                 else:
                     self.add_default_val(
