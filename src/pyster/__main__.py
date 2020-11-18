@@ -30,7 +30,7 @@ if __name__ == '__main__':
     print("timeout: " + str(args.timeout))
     print("coverage_target: " + str(args.coverage))
 
-    config = ConfigObject()
+    config = ConfigObject(file_path)
 
     try:
         module_item = UserModule(file_path, config)

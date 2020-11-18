@@ -3,16 +3,17 @@ def indent(n: int):
 
 
 class ConfigObject(object):
-    def __init__(self):
+    def __init__(self, path: str):
         self.config = {}
+        self.path = path
 
     def __str__(self):
         return str(self.config)
 
-    def read_from_config(self, path: str):
+    def read_from_config(self):
         pass
 
-    def dump_to_config(self, path: str):
+    def dump_to_config(self):
         pass
 
     def add_module(self, module_info: list):
