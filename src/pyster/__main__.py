@@ -1,9 +1,12 @@
 import argparse
 import logging
-from generator.getClassInfo import UserModule
-from generator.generateRandomInput import TestCase
-from generator.testFileGenerator import TestFileGenerator
-from generator.coverageDrivenFilter import CoverageDrivenFilter
+# from generator.getClassInfo import UserModule
+# from generator.generateRandomInput import TestCase
+# from generator.testFileGenerator import TestFileGenerator
+# from generator.coverageDrivenFilter import CoverageDrivenFilter
+
+from .init.staticParse import UserModule
+from .common import ConfigObject
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
@@ -27,12 +30,15 @@ if __name__ == '__main__':
     print("timeout: " + str(args.timeout))
     print("coverage_target: " + str(args.coverage))
 
-    try:
-        module_item = UserModule(file_path)
-        print(module_item)
+    config = ConfigObject()
 
-        coverageFilter = CoverageDrivenFilter(module_item)
-        coverageFilter.generate_tests()
+    try:
+        module_item = UserModule(file_path, config)
+        print(module_item)
+        print(config)
+
+        # coverageFilter = CoverageDrivenFilter(module_item)
+        # coverageFilter.generate_tests()
 
     except Exception as e:
         logging.exception(e)
