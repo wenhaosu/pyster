@@ -1,3 +1,7 @@
+import json
+import os
+
+
 def indent(n: int):
     return "\t" * n
 
@@ -8,7 +12,7 @@ class ConfigObject(object):
         self.path = path
 
     def __str__(self):
-        return str(self.config)
+        return json.dumps(self.config, indent=4)
 
     def read_from_config(self):
         pass

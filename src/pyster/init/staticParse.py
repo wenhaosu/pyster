@@ -60,14 +60,19 @@ class UserModule(object):
             delimiter = self.abs_path.rfind('/')
             self.module_path = self.abs_path[0:delimiter]
             self.module_name = self.abs_path[delimiter + 1:-3]
+            delimiter = self.module_path.rfind('/')
+            self.module_name = self.module_path[
+                               delimiter + 1:] + '.' + self.module_name
+            self.module_path = self.module_path[0:delimiter]
 
             # Import the file as module and retrieve all class names
             sys.path.insert(0, self.module_path)
             self.mod = importlib.import_module(self.module_name)
+
             config.add_module([self.module_name])
             class_temp = []
             for m in inspect.getmembers(self.mod, inspect.isclass):
-                if str(m[1]).split("'")[1].split(".")[0] == self.module_name:
+                if str(m[1]).split("'")[1].rsplit('.', 1)[0] == self.module_name:
                     class_temp.append(m[0])
 
             # Fill in self.module_classes with UserClass objects
