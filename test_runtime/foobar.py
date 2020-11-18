@@ -1,7 +1,7 @@
 # Sample Python program including two simple classes
 
-from objin import Foo
-from runtime.test import magic
+import objin
+from runtime.test_runtime import pyster
 
 class BankAccount:
     def __init__(self, kind: str):
@@ -32,8 +32,6 @@ def main():
     savings = BankAccount("savings")
     checking = BankAccount("checking")
 
-    print("My new {} account has ${}.".format(savings.kind, savings.balance))
-    print("My new {} account has ${}.".format(checking.kind, checking.balance))
     print(savings.status())
 
     wages = 800
@@ -42,19 +40,9 @@ def main():
     cash = savings.withdraw(150)
     checking.deposit(cash)
     test = savings.test(["test_string", "anothor_one"])
-    print(test)
-    test = savings.test_obj(Foo("name"))
-    print(test)
-
-    print("I deposited ${} into my {} account.".format(wages, savings.kind))
-    print("I transferred ${} from {} to {}.".format(cash, savings.kind,
-                                                checking.kind))
-    print()
-
-    print("My {} account now has ${}.".format(savings.kind, savings.balance))
-    print("My {} account now has ${}.".format(checking.kind, checking.balance))
+    test = savings.test_obj(objin.Foo("name"))
 
 
 if __name__ == "__main__":
-    with magic([BankAccount]):
+    with pyster([BankAccount]):
         main()
