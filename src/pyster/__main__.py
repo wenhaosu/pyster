@@ -6,6 +6,7 @@ import logging
 # from generator.coverageDrivenFilter import CoverageDrivenFilter
 
 from .init.staticParse import UserModule
+from .init.runtimeParse import RuntimeParser
 from .common import ConfigObject
 
 if __name__ == '__main__':
@@ -36,6 +37,9 @@ if __name__ == '__main__':
         module_item = UserModule(file_path, config)
         print(module_item)
         print(config)
+
+        print(module_item.module_path)
+        print(module_item.module_name)
 
         # coverageFilter = CoverageDrivenFilter(module_item)
         # coverageFilter.generate_tests()
