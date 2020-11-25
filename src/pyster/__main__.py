@@ -33,11 +33,8 @@ if __name__ == '__main__':
     config = ConfigObject(file_path)
 
     try:
-        # module_item = UserModule(file_path, config)
-        # print(module_item)
-        # print(config)
-        # print(config.dir)
-        config.read_from_config()
+        module_item = UserModule(file_path, config)
+        config.dump_to_config()
         print(config)
 
         # coverageFilter = CoverageDrivenFilter(module_item)
