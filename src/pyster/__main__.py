@@ -14,13 +14,13 @@ if __name__ == '__main__':
                         metavar='path',
                         type=str,
                         help='the path to source files')
-    parser.add_argument('--timeout',
+    parser.add_argument('-t', '--timeout',
                         metavar='timeout',
                         type=int,
                         default=20,
                         help='user defined time limit for the program to run in seconds')
-    parser.add_argument('--coverage',
-                        metavar='coverage_target',
+    parser.add_argument('-c', '--coverage',
+                        metavar='target',
                         type=int,
                         default=80,
                         choices=range(1, 101),
