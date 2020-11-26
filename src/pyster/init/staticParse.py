@@ -6,7 +6,6 @@ import sys
 
 from ..common import indent, ConfigObject
 
-
 module_to_parse = ""
 
 
@@ -68,27 +67,26 @@ class UserModule(object):
 
             # Import the file as module and retrieve all class names
             sys.path.insert(0, self.module_path)
-            module_to_parse = self.module_name
+            if module_to_parse == "":
+                module_to_parse = self.module_name
             self.mod = importlib.import_module(self.module_name)
 
             config.add_module([self.module_name])
             class_temp = []
-            third_party_class = {}
             for m in inspect.getmembers(self.mod, inspect.isclass):
-                curr_module = m[1].__module__
-                if curr_module == self.module_name:
+                curr_mod = m[1].__module__
+                if curr_mod == self.module_name:
                     class_temp.append(m[0])
                 else:
-                    config.add_module([curr_module])
-                    third_party_class[curr_module] = m[0]
+                    # Recursively add initializer for third party modules
+                    config.add_module([curr_mod])
+                    new_module_path = os.path.join(self.module_path,
+                                                   curr_mod.replace('.', '/')
+                                                   + '.py')
+                    UserModule(new_module_path, config)
 
             # Fill in self.module_classes with UserClass objects
             for c in class_temp:
                 self.module_classes[c] = UserClass(self.module_name, c)
                 config.add_class([self.module_name, c])
                 self.module_classes[c].parse_class(config)
-
-            for key, val in third_party_class.items():
-                self.module_classes[val] = UserClass(key, val)
-                config.add_class([key, val])
-                self.module_classes[val].parse_class(config)
