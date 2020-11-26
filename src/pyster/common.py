@@ -8,9 +8,12 @@ def indent(n: int):
 
 
 primitive = (int, str, bool, float)
+primitive_str = ['int', 'str', 'bool', 'float']
 
 
 def is_primitive(value):
+    if type(value) == str:
+        return value in primitive_str
     return isinstance(value, primitive)
 
 
