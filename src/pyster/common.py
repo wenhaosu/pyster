@@ -77,7 +77,7 @@ class ConfigObject(object):
                 if type(arg.annotation) == type:
                     arg_type = arg.annotation.__name__
                 # handle typing.List type
-                elif type(arg.annotation) == type(typing.List):
+                elif type(arg.annotation.__origin__) == type(typing.List.__origin__):
                     arg_type = arg.annotation.__origin__.__name__
                     sub_type = arg.annotation.__args__[0].__name__
                 else:
