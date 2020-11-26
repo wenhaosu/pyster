@@ -5,6 +5,25 @@ import os
 def indent(n: int):
     return "\t" * n
 
+primitive = (int, str, bool, float)
+
+def is_primitive(value):
+    return isinstance(value, primitive)
+
+def assign_type(config_dict, value):
+    config_dict.pop('any', None)
+    if isinstance(value, dict):
+        config_dict['dict'] = value
+    elif isinstance(value, list):
+        config_dict['list'] = []
+        for item in value:
+            config_dict['list'].append(dict())
+            assign_type(config_dict['list'][-1], item)
+    elif is_primitive(value):
+        config_dict[type(value).__name__] = value
+    else:
+        config_dict[type(value).__name__] = ""
+
 
 class ConfigObject(object):
     def __init__(self, path: str):
@@ -85,4 +104,10 @@ class ConfigObject(object):
             arg_type] = default_val
 
     def add_type_override(self, over_info):
-        pass
+        [module_name, class_name, func_name, arg_pos, arg_obj] = over_info
+        assign_type(self.config[module_name][class_name][func_name][arg_pos], arg_obj) 
+
+        
+
+
+        
