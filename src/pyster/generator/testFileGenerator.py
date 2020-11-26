@@ -1,5 +1,5 @@
-from generator.getClassInfo import UserModule
-from generator.common import indent
+from ..init.staticParse import UserModule
+from ..common import indent
 
 
 def gen_str(value):

@@ -2,9 +2,16 @@
 
 Pyster is a coverage-driven automatic unit test generator for Python projects.
 
+## Pre-request
+Pyster works well with Python 3.7 or above. Python 3.6 would raise error in static analysis stage. 
+```bash
+$ python3 --version
+Python 3.7.5
+```
+
 ## Usage
 ```bash
-python3 src/pyster <path-to-python-file>
+python3 -m src.pyster <path-to-python-file>
 ```
 
 ```

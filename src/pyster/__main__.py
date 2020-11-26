@@ -15,18 +15,18 @@ if __name__ == '__main__':
                         metavar='path',
                         type=str,
                         help='the path to source files')
-    parser.add_argument('--path_runtime',
+    parser.add_argument('-r', '--path_runtime',
                         metavar='path_runtime',
                         type=str,
                         default="",
                         help='the path to code to exercise the tool')
-    parser.add_argument('--timeout',
+    parser.add_argument('-t', '--timeout',
                         metavar='timeout',
                         type=int,
                         default=20,
                         help='user defined time limit for the program to run in seconds')
-    parser.add_argument('--coverage',
-                        metavar='coverage_target',
+    parser.add_argument('-c', '--coverage',
+                        metavar='target',
                         type=int,
                         default=80,
                         choices=range(1, 101),
@@ -40,13 +40,9 @@ if __name__ == '__main__':
 
     try:
         module_item = UserModule(file_path, config)
-        print(module_item)
-
-        print(module_item.module_path)
-        print(module_item.module_name)
-
         parser = RuntimeParser(module_item.module_name, config, args.path_runtime)
         parser.parse()
+        config.dump_to_config()
 
         print(config)
 

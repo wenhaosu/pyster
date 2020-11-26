@@ -130,6 +130,8 @@ dmypy.json
 
 # IDE folders
 .idea/
+.vscode/
 
 # Temp generated test files
 *Test.py
+.pyster/
