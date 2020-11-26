@@ -1,10 +1,8 @@
 import inspect
 import os
 import sys
-import traceback
-import pprint
 
-from ..common import indent, ConfigObject, is_primitive
+from ..common import ConfigObject
 
 
 class RuntimeParser(object):
@@ -12,28 +10,16 @@ class RuntimeParser(object):
     def __init__(self, target: str, config: ConfigObject, path=None):
         self._caller = inspect.stack()[1][1]
         self.target = target
-        self._file_names = set(map(os.path.normpath, list(map(self._get_file, [target]))))
         self.path = os.path.abspath(path) if path else None
         self.config = config
 
-    def _get_file(self, target):
-        file = "Unknown File"
-        try:
-            if hasattr(target, "__file__"):
-                file = target.__file__
-            else:
-                file = inspect.getfile(target)
-        except:
-            pass
-        return file
-
-    def _handle_call(self, code, locals_dict, args, caller=None):
+    def _handle_call(self, code, locals_dict, args):
         print(code.co_name)
         print(args)
         func_name = code.co_name
         params = list(code.co_varnames)[:code.co_argcount]
-        args_dict = dict((p,locals_dict[p]) for p in params)
-        args_type = { k: type(v) for k, v in args_dict.items()}
+        args_dict = dict((p, locals_dict[p]) for p in params)
+        args_type = {k: type(v) for k, v in args_dict.items()}
         print(args_type)
         print()
 
@@ -42,11 +28,12 @@ class RuntimeParser(object):
 
         class_name = type(args_dict['self']).__name__
         module_name = type(args_dict['self']).__module__
-     
+
         for index, value in enumerate(args_dict.values()):
             if index == 0:
                 continue
-            self.config.add_type_override([module_name, class_name, func_name, index, value])
+            self.config.add_type_override(
+                [module_name, class_name, func_name, index, value])
 
     def _handle_exception(self, code, locals_dict, args, caller=None):
         pass
@@ -59,13 +46,6 @@ class RuntimeParser(object):
 
     def _trace(self, frame, event, args):
         handler = getattr(self, '_handle_' + event)
-        event_file = frame.f_code.co_filename
-       # if event_file in self._file_names:
-        if str(event) == 'call':
-            print('event_file')
-            print(event_file)
-            print('self_file')
-            print(self._file_names)
         handler(frame.f_code, frame.f_locals, args)
         return self._trace
 
@@ -77,4 +57,3 @@ class RuntimeParser(object):
             sys.settrace(self._trace)
             user_module.main()
             sys.settrace(None)
-            

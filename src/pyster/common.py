@@ -1,16 +1,18 @@
 import json
 import os
 import typing
-from typing_inspect import get_origin
 
 
 def indent(n: int):
     return "\t" * n
 
+
 primitive = (int, str, bool, float)
+
 
 def is_primitive(value):
     return isinstance(value, primitive)
+
 
 def assign_type(config_dict, value):
     config_dict.pop('any', None)
@@ -102,9 +104,5 @@ class ConfigObject(object):
 
     def add_type_override(self, over_info):
         [module_name, class_name, func_name, arg_pos, arg_obj] = over_info
-        assign_type(self.config[module_name][class_name][func_name][arg_pos], arg_obj) 
-
-        
-
-
-        
+        assign_type(self.config[module_name][class_name][func_name][arg_pos],
+                    arg_obj)
