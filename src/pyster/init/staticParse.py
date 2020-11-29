@@ -3,6 +3,7 @@ import inspect
 import logging
 import os
 import sys
+import copy
 
 from ..common import indent, ConfigObject
 
@@ -65,27 +66,41 @@ class UserModule(object):
             self.module_path = self.abs_path[0:deli]
             self.module_name = self.abs_path[deli + 1:].replace('/', '.')[:-3]
 
-            # Import the file as module and retrieve all class names
-            sys.path.insert(0, self.module_path)
+            mod_before = []
+            mod_after = []
+
+            # Import all related files as module for only once
+            first_iter = False
             if module_to_parse == "":
+                first_iter = True
+                temp_mod = list(sys.modules.keys())
+                mod_before = copy.deepcopy(temp_mod)
+                sys.path.insert(0, self.module_path)
                 module_to_parse = self.module_name
+
             self.mod = importlib.import_module(self.module_name)
+            if first_iter:
+                temp_mod = list(sys.modules.keys())
+                mod_after = copy.deepcopy(temp_mod)
 
             config.add_module([self.module_name])
-            class_temp = []
-            for m in inspect.getmembers(self.mod, inspect.isclass):
-                curr_mod = m[1].__module__
-                if curr_mod == self.module_name:
-                    class_temp.append(m[0])
-                else:
-                    # Recursively add initializer for third party modules
-                    config.add_module([curr_mod])
-                    new_module_path = os.path.join(self.module_path,
-                                                   curr_mod.replace('.', '/')
-                                                   + '.py')
-                    UserModule(new_module_path, config)
+
+            # Recursively add initializer for third party modules
+            if first_iter:
+                for m in mod_after:
+                    if m not in mod_before:
+                        config.add_module([m])
+                        new_module_path = os.path.join(self.module_path,
+                                                       m.replace('.', '/')
+                                                       + '.py')
+                        UserModule(new_module_path, config)
 
             # Fill in self.module_classes with UserClass objects
+            class_temp = []
+            for m in inspect.getmembers(self.mod, inspect.isclass):
+                if m[1].__module__ == self.module_name:
+                    class_temp.append(m[0])
+
             for c in class_temp:
                 self.module_classes[c] = UserClass(self.module_name, c)
                 config.add_class([self.module_name, c])

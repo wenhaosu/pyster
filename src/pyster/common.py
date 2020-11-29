@@ -58,11 +58,13 @@ class ConfigObject(object):
 
     def add_module(self, module_info: list):
         [module_name] = module_info
-        self.config[module_name] = {}
+        if module_name not in self.config.keys():
+            self.config[module_name] = {}
 
     def add_class(self, class_info: list):
         [module_name, class_name] = class_info
-        self.config[module_name][class_name] = {}
+        if class_name not in self.config[module_name].keys():
+            self.config[module_name][class_name] = {}
 
     def add_func(self, func_info: list):
         [module_name, class_name, func_name, func_sig] = func_info
