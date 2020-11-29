@@ -29,8 +29,13 @@ class FuncTest(object):
     def __init__(self, config: ConfigObject, func_info: list):
         [module_name, class_name, func_name] = func_info
         self.func_name = func_name
+        self.class_name = class_name
         self.config = config
         self.func_args = config.config[module_name][class_name][func_name]
+        if "__init__" in config.config[module_name][class_name].keys():
+            self.init_args = config.config[module_name][class_name]["__init__"]
+        else:
+            self.init_args = [{"self": ""}]
         self.cnt = 0
 
     def gen_arg(self, arg_type: str, default_val, obj_names, obj_dict):
@@ -78,4 +83,15 @@ class FuncTest(object):
         obj_names = []
         obj_dict = {}
         arg_list = self.gen_list(self.func_args, obj_names, obj_dict)
-        return [obj_names, obj_dict, arg_list]
+
+        init_obj_names = []
+        init_obj_dict = {}
+        init_arg_list = self.gen_list(self.init_args, init_obj_names,
+                                      init_obj_dict)
+
+        return {
+            "func_name": self.func_name,
+            "class_name": self.class_name,
+            "init_list": [init_obj_names, init_obj_dict, init_arg_list],
+            "arg_list": [obj_names, obj_dict, arg_list]
+        }
