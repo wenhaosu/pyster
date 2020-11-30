@@ -65,8 +65,10 @@ class FuncTest(object):
         for _, temp in self.config.config.items():
             for key, val in temp.items():
                 if key == arg_type:
-                    obj_dict[arg_name] = self.gen_list(val['__init__'],
-                                                       obj_names, obj_dict)
+                    obj_dict[arg_name] = {
+                        'class': arg_type,
+                        'args': self.gen_list(val['__init__'], obj_names,
+                                              obj_dict)}
         return arg_obj
 
     def gen_list(self, list_args: list, obj_names, obj_dict):

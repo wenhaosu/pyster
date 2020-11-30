@@ -37,6 +37,14 @@ cd samples
 ./applyPatch.sh
 ```
 
+## Sample execution
+```bash
+# Phase 1
+python3 -m src.pyster --project_path samples --module_name foobar.foobar
+# Phase 2
+python3 -m src.pyster.gen --project_path samples --module_name foobar.foobar
+```
+
 
 ## Concept
 * Use built-in Python functions to obtain all methods in a Python class.
