@@ -1,8 +1,10 @@
 import argparse
 import logging
+import os
 
 from ..common import ConfigObject, Colors, notify
 from .genRandomArg import FuncTest, UnitTest
+from .testFileGenerator import TestFileGenerator
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
@@ -51,6 +53,7 @@ if __name__ == '__main__':
 
     try:
         config.read_from_config()
+        test_list = []
         for module_name, temp in config.config.items():
             if module_name == config.module_name:
                 for class_name, val in temp.items():
@@ -66,6 +69,16 @@ if __name__ == '__main__':
                         except Exception as e:
                             test.exception = e
                             print("Exception found in {}: ".format(func_name) + str(e))
+                        test.dump()
+                        test_list.append(test)
+                        for i in test.output:
+                            print(i)
+                        print()
+        
+        generator = TestFileGenerator(config, test_list)
+        generator.dump()
+        generator.write_to_file(os.path.join(project_path, config.module_name + ".test.py"))
+                        
 
 
     except Exception as e:

@@ -5,7 +5,12 @@ import os
 import importlib
 from inspect import Parameter
 
-from ..common import ConfigObject, is_primitive
+from ..common import ConfigObject, is_primitive, indent
+
+def gen_str(value):
+    if isinstance(value, str):
+        return "'" + value + "'"
+    return str(value)
 
 
 def gen_random_primitive(arg_type: str, arg_len=10):
@@ -112,6 +117,8 @@ class UnitTest(object):
         self.ret = None
         self.exception = None
 
+        self.valid = False
+
         self.module_name = config.module_name
         self.project_path = config.project_path
         self.import_modules = list(config.config.keys())
@@ -121,6 +128,8 @@ class UnitTest(object):
 
         self.test_module = importlib.import_module(self.module_name)
         self.target_class = getattr(self.test_module, self.class_name)
+
+        self.output = []
 
     def run(self):
         def run_prepare(obj_names, obj_dict):
@@ -151,10 +160,6 @@ class UnitTest(object):
                 call_args.append(arg)
         
         target_instance = self.target_class(*call_args)
-        print("call_args_for_init:")
-        print(call_args)
-        print("target_instance")
-        print(target_instance)
 
         target_func = getattr(target_instance, self.func_name)
 
@@ -167,12 +172,49 @@ class UnitTest(object):
             else:
                 call_args.append(arg)
 
-        print("call_args_for_func:")
-        print(call_args)
-        print("target_instance")
-        print(target_instance)
 
         self.ret = target_func(*call_args)
 
         print(self.ret)
 
+        self.valid = True
+
+    def dump(self):
+        if not self.valid:
+            return
+
+        def dump_init(var_name, class_name, args):
+            init_code = var_name + ' = ' + class_name + '('
+            init_code += ','.join([gen_str(arg) for arg in args])
+            init_code += ')'
+            self.output.append(indent(2) + init_code)
+
+        def dump_assert(function_name, args, ret):
+            call_code = "var." + function_name + '('
+            call_code += ','.join([gen_str(arg) for arg in args])
+            call_code += ')'
+            assert_code = "assert "
+            if is_primitive(ret):
+                assert_code += call_code
+                assert_code += " == "
+                assert_code += gen_str(ret)
+            else:
+                assert_code += "isinstance({}, {})".format(call_code, gen_str(type(ret).__name__))
+            self.output.append(indent(2) + assert_code)
+
+        def init_prepare(obj_names, obj_dict):
+            for obj_name in obj_names:
+                class_name = obj_dict[obj_name]['class']
+                module_name = obj_dict[obj_name]['module']
+                args = obj_dict[obj_name]['args']
+                dump_init(obj_name, module_name + '.' + class_name, args)
+
+        [obj_names, obj_dict, arg_list] = self.init_list
+        init_prepare(obj_names, obj_dict)
+        dump_init("var", self.module_name + '.' + self.class_name, arg_list)
+
+        [obj_names, obj_dict, arg_list] = self.arg_list
+        init_prepare(obj_names, obj_dict)
+        dump_assert(self.func_name, arg_list, self.ret)
+
+        
