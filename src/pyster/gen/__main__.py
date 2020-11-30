@@ -52,7 +52,7 @@ if __name__ == '__main__':
     try:
         config.read_from_config()
         for module_name, temp in config.config.items():
-            if module_name == 'foobar.foobar':
+            if module_name == config.module_name:
                 for class_name, val in temp.items():
                     for func_name, _ in val.items():
                         func = FuncTest(config,
@@ -60,8 +60,12 @@ if __name__ == '__main__':
                         print('----------')
                         test_info = func.generate_random_test()
                         print(test_info)
-                        test = UnitTest(test_info, config.project_path, config.module_name)
-                        test.run()
+                        test = UnitTest(test_info, config)
+                        try:
+                            test.run()
+                        except Exception as e:
+                            test.exception = e
+                            print("Exception found in {}: ".format(func_name) + str(e))
 
 
     except Exception as e:

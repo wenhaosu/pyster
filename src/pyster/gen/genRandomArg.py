@@ -68,6 +68,8 @@ class FuncTest(object):
         for mod, temp in self.config.config.items():
             for key, val in temp.items():
                 if key == arg_type:
+                    print(mod)
+                    print(arg_type)
                     obj_dict[arg_name] = {
                         'module': mod,
                         'class': arg_type,
@@ -123,20 +125,14 @@ class UnitTest(object):
         self.test_module = importlib.import_module(self.module_name)
         self.target_class = getattr(self.test_module, self.class_name)
 
-    
-
-    def _get_class_attr(self, class_name: str):
-        return getattr(self.test_module, class_name)
-
-
     def run(self):
-
-
         def run_prepare(obj_names, obj_dict):
             instance_dict = {}
             for obj_name in obj_names:
                 class_name = obj_dict[obj_name]['class']
-                class_obj = self._get_class_attr(class_name)
+                module_name = obj_dict[obj_name]['module']
+                module_obj = importlib.import_module(module_name)
+                class_obj = getattr(module_obj, class_name)
                 init_args = []
                 for arg in obj_dict[obj_name]['args']:
                     if isinstance(arg, Parameter):
@@ -150,7 +146,6 @@ class UnitTest(object):
 
         instance_dict = run_prepare(obj_names, obj_dict)
 
-
         call_args = []
         for arg in arg_list:
             if isinstance(arg, Parameter):
@@ -159,7 +154,7 @@ class UnitTest(object):
                 call_args.append(arg)
         
         target_instance = self.target_class(*call_args)
-        print("call_args")
+        print("call_args_for_init:")
         print(call_args)
         print("target_instance")
         print(target_instance)
@@ -174,6 +169,11 @@ class UnitTest(object):
                 call_args.append(instance_dict[arg.name])
             else:
                 call_args.append(arg)
+
+        print("call_args_for_func:")
+        print(call_args)
+        print("target_instance")
+        print(target_instance)
 
         self.ret = target_func(*call_args)
 
