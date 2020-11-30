@@ -65,10 +65,11 @@ class FuncTest(object):
         self.cnt += 1
         arg_obj = Parameter(arg_name, Parameter.KEYWORD_ONLY)
         obj_names[:0] = [arg_name]
-        for _, temp in self.config.config.items():
+        for mod, temp in self.config.config.items():
             for key, val in temp.items():
                 if key == arg_type:
                     obj_dict[arg_name] = {
+                        'module': mod,
                         'class': arg_type,
                         'args': self.gen_list(val['__init__'], obj_names,
                                               obj_dict)}
