@@ -32,10 +32,7 @@ class FuncTest(object):
         self.class_name = class_name
         self.config = config
         self.func_args = config.config[module_name][class_name][func_name]
-        if "__init__" in config.config[module_name][class_name].keys():
-            self.init_args = config.config[module_name][class_name]["__init__"]
-        else:
-            self.init_args = [{"self": ""}]
+        self.init_args = config.config[module_name][class_name]["__init__"]
         self.cnt = 0
 
     def gen_arg(self, arg_type: str, default_val, obj_names, obj_dict):
