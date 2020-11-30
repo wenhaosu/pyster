@@ -2,7 +2,7 @@ import argparse
 import logging
 
 from ..common import ConfigObject, Colors, notify
-from .genRandomArg import FuncTest
+from .genRandomArg import FuncTest, UnitTest
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
@@ -58,8 +58,10 @@ if __name__ == '__main__':
                         func = FuncTest(config,
                                         [module_name, class_name, func_name])
                         print('----------')
-                        print(func_name)
-                        print(func.generate_random_test())
+                        test_info = func.generate_random_test()
+                        print(test_info)
+                        test = UnitTest(test_info, config.project_path, config.module_name)
+                        test.run()
 
 
     except Exception as e:

@@ -1,5 +1,8 @@
 import random
 import string
+import sys
+import os
+import importlib
 from inspect import Parameter
 
 from ..common import ConfigObject, is_primitive
@@ -97,3 +100,81 @@ class FuncTest(object):
             "init_list": [init_obj_names, init_obj_dict, init_arg_list],
             "arg_list": [obj_names, obj_dict, arg_list]
         }
+
+
+class UnitTest(object):
+    def __init__(self, test_info: dict, config: ConfigObject):
+        self.class_name = test_info['class_name']
+        self.func_name = test_info['func_name']
+        self.init_list = test_info['init_list']
+        self.arg_list = test_info['arg_list']
+
+        self.ret = None
+        self.exception = None
+
+        self.module_name = config.module_name
+        self.project_path = config.project_path
+        self.import_modules = list(config.config.keys())
+
+
+        sys.path.insert(0, self.project_path)
+
+        self.test_module = importlib.import_module(self.module_name)
+        self.target_class = getattr(self.test_module, self.class_name)
+
+    
+
+    def _get_class_attr(self, class_name: str):
+        return getattr(self.test_module, class_name)
+
+
+    def run(self):
+
+
+        def run_prepare(obj_names, obj_dict):
+            instance_dict = {}
+            for obj_name in obj_names:
+                class_name = obj_dict[obj_name]['class']
+                class_obj = self._get_class_attr(class_name)
+                init_args = []
+                for arg in obj_dict[obj_name]['args']:
+                    if isinstance(arg, Parameter):
+                        init_args.append(instance_dict[arg.name])
+                    else:
+                        init_args.append(arg)
+                instance_dict[obj_name] = class_obj(*init_args)
+            return instance_dict
+
+        [obj_names, obj_dict, arg_list] = self.init_list
+
+        instance_dict = run_prepare(obj_names, obj_dict)
+
+
+        call_args = []
+        for arg in arg_list:
+            if isinstance(arg, Parameter):
+                call_args.append(instance_dict[arg.name])
+            else:
+                call_args.append(arg)
+        
+        target_instance = self.target_class(*call_args)
+        print("call_args")
+        print(call_args)
+        print("target_instance")
+        print(target_instance)
+
+        target_func = getattr(target_instance, self.func_name)
+
+        [obj_names, obj_dict, arg_list] = self.arg_list
+        instance_dict = run_prepare(obj_names, obj_dict)
+        call_args = []
+        for arg in arg_list:
+            if isinstance(arg, Parameter):
+                call_args.append(instance_dict[arg.name])
+            else:
+                call_args.append(arg)
+
+        self.ret = target_func(*call_args)
+
+        print(self.ret)
+
