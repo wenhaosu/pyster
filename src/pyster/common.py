@@ -1,10 +1,26 @@
 import json
 import os
 import typing
+import sys
 
 
 def indent(n: int):
     return "\t" * n
+
+
+class Colors:
+    reset = '\033[0m'
+
+    class ColorCode:
+        red = '\033[31m'
+        green = '\033[32m'
+        orange = '\033[33m'
+        cyan = '\033[36m'
+
+
+def notify(msg, color=Colors.reset):
+    sys.stderr.write(color + "== " + msg + '\n' + Colors.reset)
+    sys.stderr.flush()
 
 
 primitive = (int, str, bool, float)
@@ -33,13 +49,14 @@ def assign_type(config_dict, value):
 
 
 class ConfigObject(object):
-    def __init__(self, path: str):
+    def __init__(self, project_path: str, module_name: str):
         self.config = {}
-        self.path = path
-        if self.path[0] != '/':
-            self.path = os.path.abspath(self.path)
-        self.dir = self.path.rsplit('/', 1)[0] + '/.pyster'
-        self.name = self.path.rsplit('/', 1)[1][:-3] + '.json'
+        self.project_path = project_path
+        self.module_name = module_name
+        if self.project_path[0] != '/':
+            self.project_path = os.path.abspath(self.project_path)
+        self.dir = project_path + '/.pyster'
+        self.name = module_name + '.json'
 
     def __str__(self):
         return str(self.config)
@@ -79,7 +96,8 @@ class ConfigObject(object):
                 if type(arg.annotation) == type:
                     arg_type = arg.annotation.__name__
                 # handle typing.List type
-                elif type(arg.annotation.__origin__) == type(typing.List.__origin__):
+                elif type(arg.annotation.__origin__) == type(
+                        typing.List.__origin__):
                     arg_type = arg.annotation.__origin__.__name__
                     sub_type = arg.annotation.__args__[0].__name__
                 else:

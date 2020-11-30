@@ -7,14 +7,20 @@ import logging
 
 from .init.staticParse import UserModule
 from .init.runtimeParse import RuntimeParser
-from .common import ConfigObject
+from .common import ConfigObject, Colors, notify
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate Unit Tests')
-    parser.add_argument('path',
-                        metavar='path',
+    parser.add_argument('--project_path',
+                        metavar='project_path',
+                        default='',
                         type=str,
-                        help='the path to source files')
+                        help='the path to Python project')
+    parser.add_argument('--module_name',
+                        metavar='module_name',
+                        default='',
+                        type=str,
+                        help='the module for test generation')
     parser.add_argument('-r', '--path_runtime',
                         metavar='path_runtime',
                         type=str,
@@ -32,15 +38,28 @@ if __name__ == '__main__':
                         choices=range(1, 101),
                         help='target coverage for the generated tests in percentage')
     args = parser.parse_args()
-    file_path = args.path
-    print("timeout: " + str(args.timeout))
-    print("coverage_target: " + str(args.coverage))
+    project_path = args.project_path
+    module_name = args.module_name
+    timeout = args.timeout
+    coverage = args.coverage
 
-    config = ConfigObject(file_path)
+    notify("project_path: " + project_path, Colors.ColorCode.cyan)
+    notify("module_name: " + module_name, Colors.ColorCode.cyan)
+    notify("timeout: " + str(timeout), Colors.ColorCode.cyan)
+    notify("coverage_target: " + str(coverage), Colors.ColorCode.cyan)
+
+    if project_path == '' or module_name == '':
+        print("Please enter a valid project path / module name.")
+        exit(-1)
+
+    print("timeout: " + str(timeout))
+    print("coverage_target: " + str(coverage))
+
+    config = ConfigObject(project_path, module_name)
 
     try:
-        module_item = UserModule(file_path, config)
-        parser = RuntimeParser(module_item.module_name, config, args.path_runtime)
+        module_item = UserModule(project_path, module_name, config)
+        parser = RuntimeParser(config.module_name, config, args.path_runtime)
         parser.parse()
         config.dump_to_config()
 

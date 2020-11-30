@@ -1,6 +1,6 @@
 # Sample Python program including two simple classes
 from typing import List
-from .baz import Baz
+import foobar.baz
 
 
 class Foo:
@@ -15,7 +15,7 @@ class Foo:
     def get_info(self) -> str:
         return self.info
 
-    def call_baz(self, x: Baz):
+    def call_baz(self, x: foobar.baz.Baz):
         pass
 
 
