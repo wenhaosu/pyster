@@ -7,10 +7,15 @@ from inspect import Parameter
 
 from ..common import ConfigObject, is_primitive, indent
 
+
 def gen_str(value):
     if isinstance(value, str):
         return "'" + value + "'"
     return str(value)
+
+
+def check_primitive(value):
+    return value in ['int', 'str', 'bool', 'float']
 
 
 def gen_random_primitive(arg_type: str, arg_len=10):
@@ -47,9 +52,8 @@ class FuncTest(object):
         # 30% to directly use default value
         if random.randint(1, 10) <= 3 and default_val != '':
             return default_val
-
         # 70% to automatically generate
-        if is_primitive(arg_type):
+        if check_primitive(arg_type):
             return gen_random_primitive(arg_type)
         elif arg_type == 'dict':
             if random.randint(1, 10) <= 3:
@@ -70,8 +74,6 @@ class FuncTest(object):
         for mod, temp in self.config.config.items():
             for key, val in temp.items():
                 if key == arg_type:
-                    print(mod)
-                    print(arg_type)
                     obj_dict[arg_name] = {
                         'module': mod,
                         'class': arg_type,
@@ -123,7 +125,6 @@ class UnitTest(object):
         self.project_path = config.project_path
         self.import_modules = list(config.config.keys())
 
-
         sys.path.insert(0, self.project_path)
 
         self.test_module = importlib.import_module(self.module_name)
@@ -158,7 +159,7 @@ class UnitTest(object):
                 call_args.append(instance_dict[arg.name])
             else:
                 call_args.append(arg)
-        
+
         target_instance = self.target_class(*call_args)
 
         target_func = getattr(target_instance, self.func_name)
@@ -171,7 +172,6 @@ class UnitTest(object):
                 call_args.append(instance_dict[arg.name])
             else:
                 call_args.append(arg)
-
 
         self.ret = target_func(*call_args)
 
@@ -202,7 +202,8 @@ class UnitTest(object):
                 assert_code += call_code
                 assert_code += " is None"
             else:
-                assert_code += "isinstance({}, {})".format(call_code, type(ret).__name__)
+                assert_code += "isinstance({}, {})".format(call_code,
+                                                           type(ret).__name__)
             self.output.append(indent(1) + assert_code)
 
         def init_prepare(obj_names, obj_dict):
@@ -212,20 +213,16 @@ class UnitTest(object):
                 args = obj_dict[obj_name]['args']
                 dump_init(obj_name, module_name + '.' + class_name, args)
 
-            
-
-
         [obj_names, obj_dict, arg_list] = self.init_list
         init_prepare(obj_names, obj_dict)
         dump_init("var", self.module_name + '.' + self.class_name, arg_list)
 
         if self.func_name == "__init__":
-            assert_code = "assert isinstance(var, {}.{})".format(self.module_name, self.class_name)
+            assert_code = "assert isinstance(var, {}.{})".format(
+                self.module_name, self.class_name)
             self.output.append(indent(1) + assert_code)
             return
 
         [obj_names, obj_dict, arg_list] = self.arg_list
         init_prepare(obj_names, obj_dict)
         dump_assert(self.func_name, arg_list, self.ret)
-
-        
