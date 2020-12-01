@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+from coverage import coverage
 
 from ..common import ConfigObject, Colors, notify
 from .genRandomArg import FuncTest, UnitTest
@@ -38,12 +39,12 @@ if __name__ == '__main__':
     project_path = args.project_path
     module_name = args.module_name
     timeout = args.timeout
-    coverage = args.coverage
+    coverage_target = args.coverage
 
     notify("project_path: " + project_path, Colors.ColorCode.cyan)
     notify("module_name: " + module_name, Colors.ColorCode.cyan)
     notify("timeout: " + str(timeout), Colors.ColorCode.cyan)
-    notify("coverage_target: " + str(coverage), Colors.ColorCode.cyan)
+    notify("coverage_target: " + str(coverage_target), Colors.ColorCode.cyan)
 
     if project_path == '' or module_name == '':
         print("Please enter a valid project path / module name.")
@@ -65,7 +66,11 @@ if __name__ == '__main__':
                         print(test_info)
                         test = UnitTest(test_info, config)
                         try:
+                            cov = coverage()
+                            cov.start()
                             test.run()
+                            cov.stop()
+                            print(cov.report())
                         except Exception as e:
                             test.exception = e
                             print("Exception found in {}: ".format(func_name) + str(e))
