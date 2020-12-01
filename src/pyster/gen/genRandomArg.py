@@ -148,8 +148,6 @@ class UnitTest(object):
                         init_args.append(arg)
                 instance_dict[obj_name] = class_obj(*init_args)
             return instance_dict
-        
-        self.valid = true
 
         [obj_names, obj_dict, arg_list] = self.init_list
 
@@ -178,6 +176,8 @@ class UnitTest(object):
         self.ret = target_func(*call_args)
 
         print(self.ret)
+
+        self.valid = True
 
 
     def dump(self):

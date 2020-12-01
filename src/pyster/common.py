@@ -116,7 +116,12 @@ class ConfigObject(object):
             self.config[module_name][class_name][func_name].append(
                 {arg_type: ""})
 
-            if arg.default != arg.empty:
+            if arg.default != arg.empty and (is_primitive(
+                    type(arg.default)) or (
+                    arg.annotation != arg.empty and 
+                    type(arg.annotation) != type and 
+                    type(arg.annotation.__origin__) == type(
+                    typing.List.__origin__))):
                 self.add_default_val(
                     [module_name, class_name, func_name, counter,
                      arg_type], arg.default, sub_type)
