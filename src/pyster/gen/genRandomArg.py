@@ -9,8 +9,12 @@ from ..common import ConfigObject, is_primitive, indent
 
 
 def gen_str(value):
+    if isinstance(value, Parameter):
+        return value.name
     if isinstance(value, str):
-        return "'" + value + "'"
+        return 'r' + '"' + value + '"'
+    if isinstance(value, list):
+        return "[" + ", ".join([gen_str(i) for i in value]) + "]"
     return str(value)
 
 
@@ -132,46 +136,50 @@ class UnitTest(object):
 
         self.output = []
 
-    def run(self):
+    def run(self):            
+        def parse(args, lookup_dict):
+            init_args = []
+            for arg in args:
+                if isinstance(arg, Parameter):
+                    init_args.append(lookup_dict[arg.name])
+                elif isinstance(arg, list):
+                    init_args.append(parse(arg, lookup_dict))
+                else:
+                    init_args.append(arg)
+            if (self.func_name in ["_str()", "__repr__", "__unicode__"]):
+                print(self.func_name)
+                print(init_args)
+            return init_args
+
+
         def run_prepare(obj_names, obj_dict):
+
+
             instance_dict = {}
             for obj_name in obj_names:
                 class_name = obj_dict[obj_name]['class']
                 module_name = obj_dict[obj_name]['module']
                 module_obj = importlib.import_module(module_name)
                 class_obj = getattr(module_obj, class_name)
-                init_args = []
-                for arg in obj_dict[obj_name]['args']:
-                    if isinstance(arg, Parameter):
-                        init_args.append(instance_dict[arg.name])
-                    else:
-                        init_args.append(arg)
-                instance_dict[obj_name] = class_obj(*init_args)
+                _init_args = parse(obj_dict[obj_name]['args'], instance_dict)
+                instance_dict[obj_name] = class_obj(*_init_args)
             return instance_dict
 
         [obj_names, obj_dict, arg_list] = self.init_list
 
         instance_dict = run_prepare(obj_names, obj_dict)
 
-        call_args = []
-        for arg in arg_list:
-            if isinstance(arg, Parameter):
-                call_args.append(instance_dict[arg.name])
-            else:
-                call_args.append(arg)
+        call_args = parse(arg_list, instance_dict)
 
         target_instance = self.target_class(*call_args)
 
         target_func = getattr(target_instance, self.func_name)
 
         [obj_names, obj_dict, arg_list] = self.arg_list
+
         instance_dict = run_prepare(obj_names, obj_dict)
-        call_args = []
-        for arg in arg_list:
-            if isinstance(arg, Parameter):
-                call_args.append(instance_dict[arg.name])
-            else:
-                call_args.append(arg)
+
+        call_args = parse(arg_list, instance_dict)
 
         self.ret = target_func(*call_args)
 
@@ -192,19 +200,26 @@ class UnitTest(object):
 
         def dump_assert(function_name, args, ret):
             call_code = "var." + function_name + '('
-            call_code += ','.join([gen_str(arg) for arg in args])
+            call_code += ', '.join([gen_str(arg) for arg in args])
             call_code += ')'
             assert_code = "assert "
             if is_primitive(ret):
                 assert_code += call_code
-                assert_code += " == "
+                if isinstance(ret, bool):
+                    assert_code += " is "
+                else:
+                    assert_code += " == "
                 assert_code += gen_str(ret)
             elif ret is None:
                 assert_code += call_code
                 assert_code += " is None"
             else:
-                assert_code += "isinstance({}, {})".format(call_code,
+                if hasattr(ret, '__module__'):
+                    assert_code += "isinstance({}, {})".format(call_code,
                                                            ret.__module__ + '.' + type(ret).__name__)
+                else:
+                    assert_code += "{} is not None".format(call_code)
+                
             self.output.append(indent(1) + assert_code)
 
         def init_prepare(obj_names, obj_dict):

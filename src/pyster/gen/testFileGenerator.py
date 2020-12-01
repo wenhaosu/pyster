@@ -14,6 +14,7 @@ class TestFileGenerator:
             self.output.append('def test_{}_{}():'.format(unittest.func_name.strip('_'), unittest.class_name))
             self.output += unittest.output
             self.output.append('')
+            self.output.append('')
 
     def dump_imports(self):
         for imp in self.imports:

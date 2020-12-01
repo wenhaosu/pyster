@@ -88,11 +88,6 @@ if __name__ == '__main__':
         cov_json_file = os.path.join(project_path, ".pyster", "coverage_temp.json")
         with open(cov_json_file, 'w') as f:
             json_rep.report(morfs=[config.get_file_path()], outfile=f)
-        print()
-        print()
-        print()
-        print()
-        print(json_rep.report_data['files'])
 
         
         generator = TestFileGenerator(config, test_list)
