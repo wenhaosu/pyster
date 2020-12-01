@@ -21,7 +21,7 @@ def gen_random_primitive(arg_type: str, arg_len=10):
     elif arg_type == 'str':
         if random.randint(1, 10) <= 3:
             return ""
-        letters = string.ascii_letters + string.digits + string.punctuation
+        letters = string.ascii_letters + string.digits
         return ''.join(random.choice(letters) for _ in range(arg_len))
     elif arg_type == 'bool':
         return bool(random.getrandbits(1))
@@ -187,7 +187,7 @@ class UnitTest(object):
             init_code = var_name + ' = ' + class_name + '('
             init_code += ','.join([gen_str(arg) for arg in args])
             init_code += ')'
-            self.output.append(indent(2) + init_code)
+            self.output.append(indent(1) + init_code)
 
         def dump_assert(function_name, args, ret):
             call_code = "var." + function_name + '('
@@ -198,9 +198,12 @@ class UnitTest(object):
                 assert_code += call_code
                 assert_code += " == "
                 assert_code += gen_str(ret)
+            elif ret is None:
+                assert_code += call_code
+                assert_code += " is None"
             else:
-                assert_code += "isinstance({}, {})".format(call_code, gen_str(type(ret).__name__))
-            self.output.append(indent(2) + assert_code)
+                assert_code += "isinstance({}, {})".format(call_code, type(ret).__name__)
+            self.output.append(indent(1) + assert_code)
 
         def init_prepare(obj_names, obj_dict):
             for obj_name in obj_names:
@@ -209,9 +212,17 @@ class UnitTest(object):
                 args = obj_dict[obj_name]['args']
                 dump_init(obj_name, module_name + '.' + class_name, args)
 
+            
+
+
         [obj_names, obj_dict, arg_list] = self.init_list
         init_prepare(obj_names, obj_dict)
         dump_init("var", self.module_name + '.' + self.class_name, arg_list)
+
+        if self.func_name == "__init__":
+            assert_code = "assert isinstance(var, {}.{})".format(self.module_name, self.class_name)
+            self.output.append(indent(1) + assert_code)
+            return
 
         [obj_names, obj_dict, arg_list] = self.arg_list
         init_prepare(obj_names, obj_dict)

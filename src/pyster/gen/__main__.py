@@ -77,7 +77,8 @@ if __name__ == '__main__':
         
         generator = TestFileGenerator(config, test_list)
         generator.dump()
-        generator.write_to_file(os.path.join(project_path, config.module_name + ".test.py"))
+        module_camal_name = "".join([i.capitalize() for i in config.module_name.split('.')])
+        generator.write_to_file(os.path.join(project_path, module_camal_name[0].lower() + module_camal_name[1:] + "Test.py"))
                         
 
 
