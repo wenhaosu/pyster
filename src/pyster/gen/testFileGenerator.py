@@ -11,7 +11,7 @@ class TestFileGenerator:
 
     def dump_function(self, unittest: UnitTest):
         if unittest.valid:
-            self.output.append('def test_{}_{}():'.format(unittest.func_name, unittest.class_name))
+            self.output.append('def test_{}_{}():'.format(unittest.func_name.strip('_'), unittest.class_name))
             self.output += unittest.output
             self.output.append('')
 

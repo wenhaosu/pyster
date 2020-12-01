@@ -1,7 +1,10 @@
 import argparse
 import logging
 import os
+from pprint import PrettyPrinter
 from coverage import coverage
+
+from coverage.jsonreport import JsonReporter
 
 from ..common import ConfigObject, Colors, notify
 from .genRandomArg import FuncTest, UnitTest
@@ -55,6 +58,8 @@ if __name__ == '__main__':
     try:
         config.read_from_config()
         test_list = []
+        cov = coverage()
+        cov.start()
         for module_name, temp in config.config.items():
             if module_name == config.module_name:
                 for class_name, val in temp.items():
@@ -66,11 +71,7 @@ if __name__ == '__main__':
                         print(test_info)
                         test = UnitTest(test_info, config)
                         try:
-                            cov = coverage()
-                            cov.start()
                             test.run()
-                            cov.stop()
-                            print(cov.report())
                         except Exception as e:
                             test.exception = e
                             print("Exception found in {}: ".format(func_name) + str(e))
@@ -79,6 +80,20 @@ if __name__ == '__main__':
                         for i in test.output:
                             print(i)
                         print()
+        cov.stop()
+
+        pp = PrettyPrinter()
+
+        json_rep = JsonReporter(cov)
+        cov_json_file = os.path.join(project_path, ".pyster", "coverage_temp.json")
+        with open(cov_json_file, 'w') as f:
+            json_rep.report(morfs=[config.get_file_path()], outfile=f)
+        print()
+        print()
+        print()
+        print()
+        print(json_rep.report_data['files'])
+
         
         generator = TestFileGenerator(config, test_list)
         generator.dump()

@@ -37,14 +37,3 @@ class Bar:
 
     def set_array(self, arr: List[bool] = [True, False]):
         self.array = arr
-
-
-def main():
-    foo = Foo('Foo Class')
-    bar = Bar()
-    print(foo.foo_func(16))
-    print(bar.bar_func(16))
-
-
-if __name__ == "__main__":
-    main()

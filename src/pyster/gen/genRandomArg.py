@@ -148,6 +148,8 @@ class UnitTest(object):
                         init_args.append(arg)
                 instance_dict[obj_name] = class_obj(*init_args)
             return instance_dict
+        
+        self.valid = true
 
         [obj_names, obj_dict, arg_list] = self.init_list
 
@@ -177,7 +179,6 @@ class UnitTest(object):
 
         print(self.ret)
 
-        self.valid = True
 
     def dump(self):
         if not self.valid:
@@ -203,7 +204,7 @@ class UnitTest(object):
                 assert_code += " is None"
             else:
                 assert_code += "isinstance({}, {})".format(call_code,
-                                                           type(ret).__name__)
+                                                           ret.__module__ + '.' + type(ret).__name__)
             self.output.append(indent(1) + assert_code)
 
         def init_prepare(obj_names, obj_dict):

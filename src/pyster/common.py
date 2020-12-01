@@ -62,6 +62,11 @@ class ConfigObject(object):
     def __str__(self):
         return str(self.config)
 
+    def get_file_path(self):
+        module_file = self.module_name.split('.')
+        module_file[-1] += '.py'
+        return os.path.join(self.project_path, *module_file)
+
     def read_from_config(self):
         if not os.path.exists(os.path.join(self.dir, self.name)):
             raise FileNotFoundError
