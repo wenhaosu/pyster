@@ -16,7 +16,11 @@ python3 -m src.pyster.init \
   --project_path <path-to-project> \
   --module_name <module-for-testing>
 # Stage 2: Generate unit tests
-python3 -m src.pyster.init <path-to-python-file>
+python3 -m src.pyster.gen \
+  --project_path <path-to-project> \
+  --module_name <module-for-testing> \
+  --timeout <timeout-limit> \
+  --coverage <coverage-target>
 ```
 
 ```bash
