@@ -22,11 +22,6 @@ if __name__ == '__main__':
                         default='',
                         type=str,
                         help='the module for test generation')
-    parser.add_argument('-r', '--path_runtime',
-                        metavar='path_runtime',
-                        type=str,
-                        default="",
-                        help='the path to code to exercise the tool')
     parser.add_argument('-t', '--timeout',
                         metavar='timeout',
                         type=int,

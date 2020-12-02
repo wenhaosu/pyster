@@ -6,7 +6,7 @@ from .runtimeParse import RuntimeParser
 from ..common import ConfigObject, Colors, notify
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate Unit Tests')
+    parser = argparse.ArgumentParser(description='Generate Pyster Config File')
     parser.add_argument('--project_path',
                         metavar='project_path',
                         default='',
@@ -25,6 +25,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     project_path = args.project_path
     module_name = args.module_name
+    path_runtime = args.path_runtime
 
     notify("project_path: " + project_path, Colors.ColorCode.cyan)
     notify("module_name: " + module_name, Colors.ColorCode.cyan)
@@ -37,7 +38,7 @@ if __name__ == '__main__':
 
     try:
         module_item = UserModule(project_path, module_name, config)
-        parser = RuntimeParser(config.module_name, config, args.path_runtime)
+        parser = RuntimeParser(config.module_name, config, path_runtime)
         parser.parse()
         config.dump_to_config()
 
