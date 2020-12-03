@@ -3,11 +3,9 @@
 Pyster is a coverage-driven automatic unit test generator for Python projects.
 
 ## Pre-request
-Pyster works well with Python 3.7 or above. Python 3.6 would raise error in static analysis stage. 
-```bash
-$ python3 --version
-Python 3.7.5
-```
+- Python 3
+- [Coverage.py](https://coverage.readthedocs.io/en/coverage-5.3/) (`pip3 install coverage`)
+- [pytest](https://docs.pytest.org/en/stable/) (`pip3 install pytest`)
 
 ## Usage
 ```bash
