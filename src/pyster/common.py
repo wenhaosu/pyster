@@ -16,6 +16,7 @@ class Colors:
         green = '\033[32m'
         orange = '\033[33m'
         cyan = '\033[36m'
+        lightcyan = '\033[96m'
 
 
 def notify(msg, color=Colors.reset):
@@ -54,8 +55,8 @@ class ConfigObject(object):
         self.config = {}
         self.project_path = project_path
         self.module_name = module_name
-        if self.project_path[0] != '/':
-            self.project_path = os.path.abspath(self.project_path)
+        # if self.project_path[0] != '/':
+        #     self.project_path = os.path.abspath(self.project_path)
         self.dir = project_path + '/.pyster'
         self.name = module_name + '.json'
 
