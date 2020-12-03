@@ -1,4 +1,4 @@
-from .genRandomArg import UnitTest
+from .testRunner import UnitTest
 from ..common import ConfigObject, indent
 
 class TestFileGenerator:
