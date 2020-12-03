@@ -1,5 +1,7 @@
 import os
 import time
+import sys
+import sqlite3
 
 from coverage import coverage
 from coverage.jsonreport import JsonReporter
@@ -24,10 +26,9 @@ class CoverageDrivenFilter:
                                           "coverage_temp.json")
 
     def init_user_test_run(self):
-        if len(self.user_tests) == 0:
-            return
-        # TODO: Run user specified tests
-        pass
+        notify("Running user test suite...", Colors.ColorCode.orange)
+        files = ' '.join(f for f in self.user_tests)
+        os.system('coverage run -m pytest ' + files)
 
     def dump_cov_info(self, cov, first_trial=False):
         json_rep = JsonReporter(cov)
@@ -47,11 +48,10 @@ class CoverageDrivenFilter:
         config = self.config
         test_list = []
         test_list_exception = []
-        cov = coverage()
-        cov.start()
-        # Run user tests first if exists
-        self.init_user_test_run()
-        cov.stop()
+        cov = coverage(auto_data=True, data_file='.coverage')
+        if len(self.user_tests) != 0:
+            self.init_user_test_run()
+            cov.load()
         self.dump_cov_info(cov, True)
 
         for module_name, temp in config.config.items():
