@@ -18,6 +18,9 @@ class Foo:
     def call_baz(self, x: Baz):
         pass
 
+    def raise_exception(self):
+        raise NotImplementedError
+
 
 class Bar:
     def __init__(self):

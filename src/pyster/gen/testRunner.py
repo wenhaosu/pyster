@@ -67,6 +67,8 @@ class UnitTest(object):
                 instance_dict[obj_name] = class_obj(*_init_args)
             return instance_dict
 
+        self.valid = True
+
         [obj_names, obj_dict, arg_list] = self.init_list
         instance_dict = run_prepare(obj_names, obj_dict)
         call_args = parse(arg_list, instance_dict)
@@ -80,18 +82,17 @@ class UnitTest(object):
 
         self.ret = target_func(*call_args)
         print(self.ret)
-        self.valid = True
 
 
     def dump(self):
         if not self.valid:
             return
 
-        def dump_init(var_name, class_name, args):
+        def dump_init(var_name, class_name, args, init_indent=1):
             init_code = var_name + ' = ' + class_name + '('
             init_code += ','.join([gen_str(arg) for arg in args])
             init_code += ')'
-            self.output.append(indent(1) + init_code)
+            self.output.append(indent(init_indent) + init_code)
 
         def dump_assert(function_name, args, ret):
             call_code = "var." + function_name + '('
@@ -126,7 +127,17 @@ class UnitTest(object):
 
         [obj_names, obj_dict, arg_list] = self.init_list
         init_prepare(obj_names, obj_dict)
-        dump_init("var", self.module_name + '.' + self.class_name, arg_list)
+
+        init_indent = 1
+        if self.exception:
+            init_indent +=1
+            self.output.append(indent(1) + "try:")
+            dump_init("var", self.module_name + '.' + self.class_name, arg_list, init_indent)
+            self.output.append(indent(1) + "except Exception as e:")
+            self.output.append(indent(2) + "assert isinstance(e, {})".format(self.exception.__class__.__name__))
+            return
+
+        dump_init("var", self.module_name + '.' + self.class_name, arg_list, init_indent)
 
         if self.func_name == "__init__":
             assert_code = "assert isinstance(var, {}.{})".format(

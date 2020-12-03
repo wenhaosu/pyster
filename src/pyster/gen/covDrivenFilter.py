@@ -19,6 +19,7 @@ class CoverageDrivenFilter:
         config = self.config
         config.read_from_config()
         test_list = []
+        test_list_exception = []
         cov = coverage()
         cov.start()
         for module_name, temp in config.config.items():
@@ -33,11 +34,13 @@ class CoverageDrivenFilter:
                         test = UnitTest(test_info, config)
                         try:
                             test.run()
+                            test_list.append(test)
                         except Exception as e:
+                            print(type(e).__name__)
                             test.exception = e
                             print("Exception found in {}: ".format(func_name) + str(e))
+                            test_list_exception.append(test)
                         test.dump()
-                        test_list.append(test)
                         for i in test.output:
                             print(i)
                         print()
@@ -49,7 +52,7 @@ class CoverageDrivenFilter:
             json_rep.report(morfs=[config.get_file_path()], outfile=f)
 
         
-        generator = TestFileGenerator(config, test_list)
+        generator = TestFileGenerator(config, test_list + test_list_exception)
         generator.dump()
         module_camal_name = "".join([i.capitalize() for i in config.module_name.split('.')])
         generator.write_to_file(os.path.join(config.project_path, module_camal_name[0].lower() + module_camal_name[1:] + "Test.py"))
