@@ -1,5 +1,6 @@
 from .testRunner import UnitTest
-from ..common import ConfigObject, indent
+from ..common import ConfigObject
+
 
 class TestFileGenerator:
     def __init__(self, config: ConfigObject, unittest_list: list):
@@ -11,7 +12,9 @@ class TestFileGenerator:
 
     def dump_function(self, unittest: UnitTest):
         if unittest.valid:
-            self.output.append('def test_{}_{}():'.format(unittest.func_name.strip('_'), unittest.class_name))
+            self.output.append(
+                'def test_{}_{}():'.format(unittest.func_name.strip('_'),
+                                           unittest.class_name))
             self.output += unittest.output
             self.output.append('')
             self.output.append('')

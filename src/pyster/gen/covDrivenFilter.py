@@ -4,17 +4,17 @@ from coverage import coverage
 from coverage.jsonreport import JsonReporter
 
 from .testRunner import UnitTest
-from ..common import ConfigObject, indent
+from ..common import ConfigObject
 from .genRandomArg import FuncTest
 from .testFileGenerator import TestFileGenerator
 
 
 class CoverageDrivenFilter:
 
-    def __init__(self, config: ConfigObject, coverage: int):
+    def __init__(self, config: ConfigObject, _coverage: int):
         # code for getting a dict of generated tests
         self.config = config
-    
+
     def generate(self):
         config = self.config
         config.read_from_config()
@@ -38,7 +38,8 @@ class CoverageDrivenFilter:
                         except Exception as e:
                             print(type(e).__name__)
                             test.exception = e
-                            print("Exception found in {}: ".format(func_name) + str(e))
+                            print("Exception found in {}: ".format(
+                                func_name) + str(e))
                             test_list_exception.append(test)
                         test.dump()
                         for i in test.output:
@@ -47,13 +48,15 @@ class CoverageDrivenFilter:
         cov.stop()
 
         json_rep = JsonReporter(cov)
-        cov_json_file = os.path.join(config.project_path, ".pyster", "coverage_temp.json")
+        cov_json_file = os.path.join(config.project_path, ".pyster",
+                                     "coverage_temp.json")
         with open(cov_json_file, 'w') as f:
             json_rep.report(morfs=[config.get_file_path()], outfile=f)
 
-        
         generator = TestFileGenerator(config, test_list + test_list_exception)
         generator.dump()
-        module_camal_name = "".join([i.capitalize() for i in config.module_name.split('.')])
-        generator.write_to_file(os.path.join(config.project_path, module_camal_name[0].lower() + module_camal_name[1:] + "Test.py"))
-                        
+        module_camel_name = "".join(
+            [i.capitalize() for i in config.module_name.split('.')])
+        generator.write_to_file(os.path.join(
+            config.project_path,
+            module_camel_name[0].lower() + module_camel_name[1:] + "Test.py"))
