@@ -1,16 +1,12 @@
 import random
 import string
-import sys
-import os
-import importlib
 from inspect import Parameter
 
-from ..common import ConfigObject, is_primitive, indent
-
+from ..common import ConfigObject
 
 
 def check_primitive(value):
-    return value in ['int', 'str', 'bool', 'float']
+    return value in ['int', 'str', 'bool', 'float', 'NoneType']
 
 
 def gen_random_primitive(arg_type: str, arg_len=10):
@@ -102,4 +98,3 @@ class FuncTest(object):
             "init_list": [init_obj_names, init_obj_dict, init_arg_list],
             "arg_list": [obj_names, obj_dict, arg_list]
         }
-
