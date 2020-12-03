@@ -88,7 +88,7 @@ class UnitTest(object):
                 init_code = var_name + ' = ' + class_name + '('
             else:
                 init_code = class_name + '('
-            init_code += ','.join([gen_str(arg) for arg in args])
+            init_code += ', '.join([gen_str(arg) for arg in args])
             init_code += ')'
             self.output.append(indent(_init_indent) + init_code)
 
@@ -117,22 +117,22 @@ class UnitTest(object):
 
             self.output.append(indent(1) + _assert_code)
 
-        def init_prepare(_obj_names, _obj_dict):
+        def init_prepare(_obj_names, _obj_dict, init_indent):
             for obj_name in _obj_names:
                 class_name = _obj_dict[obj_name]['class']
                 module_name = _obj_dict[obj_name]['module']
                 args = _obj_dict[obj_name]['args']
-                dump_init(obj_name, module_name + '.' + class_name, args)
-
-        if self.exception:
-            self.output.append(indent(1) + "try:")
-
-        [obj_names, obj_dict, arg_list] = self.init_list
-        init_prepare(obj_names, obj_dict)
+                dump_init(obj_name, module_name + '.' + class_name, args, init_indent)
 
         init_indent = 1
         if self.exception:
             init_indent += 1
+            self.output.append(indent(1) + "try:")
+
+        [obj_names, obj_dict, arg_list] = self.init_list
+        init_prepare(obj_names, obj_dict, init_indent)
+
+        if self.exception:
             dump_init(None, self.module_name + '.' + self.class_name, arg_list,
                       init_indent)
             self.output.append(indent(1) + "except Exception as e:")
@@ -150,5 +150,5 @@ class UnitTest(object):
             return
 
         [obj_names, obj_dict, arg_list] = self.arg_list
-        init_prepare(obj_names, obj_dict)
+        init_prepare(obj_names, obj_dict, init_indent)
         dump_assert(self.func_name, arg_list, self.ret)
