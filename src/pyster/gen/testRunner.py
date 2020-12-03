@@ -48,9 +48,9 @@ class UnitTest(object):
                     init_args.append(parse(arg, lookup_dict))
                 else:
                     init_args.append(arg)
-            if self.func_name in ["_str()", "__repr__", "__unicode__"]:
-                print(self.func_name)
-                print(init_args)
+            # if self.func_name in ["_str()", "__repr__", "__unicode__"]:
+            #     print(self.func_name)
+            #     print(init_args)
             return init_args
 
         def run_prepare(_obj_names, _obj_dict):
@@ -78,14 +78,16 @@ class UnitTest(object):
         call_args = parse(arg_list, instance_dict)
 
         self.ret = target_func(*call_args)
-        print(self.ret)
 
     def dump(self):
         if not self.valid:
             return
 
         def dump_init(var_name, class_name, args, _init_indent=1):
-            init_code = var_name + ' = ' + class_name + '('
+            if var_name:
+                init_code = var_name + ' = ' + class_name + '('
+            else:
+                init_code = class_name + '('
             init_code += ','.join([gen_str(arg) for arg in args])
             init_code += ')'
             self.output.append(indent(_init_indent) + init_code)
@@ -122,15 +124,17 @@ class UnitTest(object):
                 args = _obj_dict[obj_name]['args']
                 dump_init(obj_name, module_name + '.' + class_name, args)
 
+        if self.exception:
+            self.output.append(indent(1) + "try:")
+
         [obj_names, obj_dict, arg_list] = self.init_list
         init_prepare(obj_names, obj_dict)
 
         init_indent = 1
         if self.exception:
             init_indent += 1
-            self.output.append(indent(1) + "try:")
-            dump_init("var", self.module_name + '.' + self.class_name,
-                      arg_list, init_indent)
+            dump_init(None, self.module_name + '.' + self.class_name, arg_list,
+                      init_indent)
             self.output.append(indent(1) + "except Exception as e:")
             self.output.append(indent(2) + "assert isinstance(e, {})".format(
                 self.exception.__class__.__name__))
