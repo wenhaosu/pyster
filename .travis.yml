@@ -11,4 +11,4 @@ install:
 
 script:
   - python3 -m src.pyster.init --project_path samples/foobar --module_name foobar.foobar
-  - python3 -m src.pyster.gen --project_path samples/foobar --module_name foobar.foobar
+  - python3 -m src.pyster.gen --project_path samples/foobar --module_name foobar.foobar -c 50 -t 1
