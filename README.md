@@ -18,43 +18,9 @@ python3 -m src.pyster.init \
 python3 -m src.pyster.gen \
   --project_path <path-to-project> \
   --module_name <module-for-testing> \
+  --user_tests <list-of-existing-test-files> \
   --timeout <timeout-limit> \
   --coverage <coverage-target>
-```
-
-```bash
-# Stage 1: Init pyster config file
-usage: __main__.py [-h] [--project_path project_path]
-                   [--module_name module_name] [-r path_runtime]
-
-Generate Pyster Config File
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --project_path project_path
-                        the path to Python project
-  --module_name module_name
-                        the module for test generation
-  -r path_runtime, --path_runtime path_runtime
-                        the path to code to exercise the tool
-
-# Stage 2: Generate unit tests
-usage: __main__.py [-h] [--project_path project_path]
-                   [--module_name module_name] [-t timeout] [-c target]  
-
-Generate Unit Tests
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --project_path project_path
-                        the path to Python project
-  --module_name module_name
-                        the module for test generation
-  -t timeout, --timeout timeout
-                        user defined time limit for the program to run in
-                        seconds
-  -c target, --coverage target
-                        target coverage for the generated tests in percentage
 ```
 
 ## Test on existing samples
@@ -69,9 +35,8 @@ cd samples
 # Phase 1
 python3 -m src.pyster.init --project_path samples/foobar --module_name foobar.foobar
 # Phase 2
-python3 -m src.pyster.gen --project_path samples/foobar --module_name foobar.foobar
+python3 -m src.pyster.gen --project_path samples/foobar --module_name foobar.foobar -t 1 -c 80
 ```
-
 
 ## Concept
 * Use built-in Python functions to obtain all methods in a Python class.
