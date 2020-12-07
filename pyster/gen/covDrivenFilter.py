@@ -1,7 +1,5 @@
 import os
 import time
-import sys
-import sqlite3
 
 from coverage import coverage
 from coverage.jsonreport import JsonReporter
@@ -41,7 +39,8 @@ class CoverageDrivenFilter:
         return self.coverage_val > cov_rate_before
 
     def notify_test_found(self, test_info):
-        notify("Test found: " + str(test_info))
+        notify("Test found for function: " + str(
+            test_info['class_name']) + "." + str(test_info['func_name']))
         notify("Current coverage: " + str(self.coverage_val))
 
     def generate(self):

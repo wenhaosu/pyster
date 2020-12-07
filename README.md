@@ -11,13 +11,23 @@ Pyster is a coverage-driven automatic unit test generator for Python projects.
 ## Usage
 ```bash
 # Stage 1: Init pyster config file
-python3 -m src.pyster.init \
-  --project_path <path-to-project> \
-  --module_name <module-for-testing>
-# Stage 2: Generate unit tests
-python3 -m src.pyster.gen \
+python3 -m pyster.init \
   --project_path <path-to-project> \
   --module_name <module-for-testing> \
+  --path_runtime <runtime-analysis-code>
+# Stage 2: Generate unit tests
+python3 -m pyster.gen \
+  --project_path <path-to-project> \
+  --module_name <module-for-testing> \
+  --user_tests <list-of-existing-test-files> \
+  --timeout <timeout-limit> \
+  --coverage <coverage-target>
+
+# Run Stage 1 and Stage 2 together:
+python3 -m pyster \
+  --project_path <path-to-project> \
+  --module_name <module-for-testing> \
+  --path_runtime <runtime-analysis-code> \
   --user_tests <list-of-existing-test-files> \
   --timeout <timeout-limit> \
   --coverage <coverage-target>
@@ -33,9 +43,9 @@ cd samples
 ## Sample execution
 ```bash
 # Phase 1
-python3 -m src.pyster.init --project_path samples/foobar --module_name foobar.foobar
+python3 -m pyster.init --project_path samples/foobar --module_name foobar.foobar
 # Phase 2
-python3 -m src.pyster.gen --project_path samples/foobar --module_name foobar.foobar -t 1 -c 80
+python3 -m pyster.gen --project_path samples/foobar --module_name foobar.foobar -t 1 -c 80
 ```
 
 ## Concept
