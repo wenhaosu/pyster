@@ -2,7 +2,7 @@ import inspect
 import os
 import sys
 
-from ..common import ConfigObject
+from ..common import ConfigObject, notify, Colors
 
 
 class RuntimeParser(object):
@@ -50,6 +50,8 @@ class RuntimeParser(object):
         return self._trace
 
     def parse(self):
+        notify("Runtime parsing module: " + self.target + "...",
+               Colors.ColorCode.yellow)
         if self.path:
             path, filename = os.path.split(self.path)
             sys.path.insert(0, path)

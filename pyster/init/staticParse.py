@@ -3,7 +3,7 @@ import inspect
 import sys
 import copy
 
-from ..common import indent, ConfigObject
+from ..common import indent, ConfigObject, notify, Colors
 
 
 class UserClass(object):
@@ -41,6 +41,9 @@ class UserModule(object):
         self.module_name = module_name
         self.module_classes = {}
         self.mod = None
+        if len(config.config) != 0:
+            notify("Statically parsing module: " + module_name + "...",
+                   Colors.ColorCode.yellow)
         self.parse_module(config)
 
     def __str__(self, ind: int = 0):

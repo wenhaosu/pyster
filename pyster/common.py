@@ -2,6 +2,7 @@ import json
 import os
 import typing
 import sys
+import argparse
 
 
 def indent(n: int):
@@ -15,6 +16,7 @@ class Colors:
         red = '\033[31m'
         green = '\033[32m'
         orange = '\033[33m'
+        yellow = '\033[93m'
         cyan = '\033[36m'
         lightcyan = '\033[96m'
 
@@ -24,8 +26,53 @@ def notify(msg, color=Colors.reset):
     sys.stderr.flush()
 
 
+def notify_init_params(args, stage='init'):
+    project_path = args.project_path
+    module_name = args.module_name
+    notify("project_path: " + project_path, Colors.ColorCode.cyan)
+    notify("module_name: " + module_name, Colors.ColorCode.cyan)
+    if stage != 'init':
+        notify("user_tests: " + str(args.user_tests), Colors.ColorCode.cyan)
+        notify("timeout: " + str(args.timeout), Colors.ColorCode.cyan)
+        notify("coverage_target: " + str(args.coverage),
+               Colors.ColorCode.cyan)
+
+
 primitive = (int, str, bool, float)
 primitive_str = ['int', 'str', 'bool', 'float']
+
+parser = argparse.ArgumentParser(description='Generate Pyster Config File')
+parser.add_argument('--project_path',
+                    metavar='project_path',
+                    default='',
+                    type=str,
+                    help='the path to Python project')
+parser.add_argument('--module_name',
+                    metavar='module_name',
+                    default='',
+                    type=str,
+                    help='the module for test generation')
+parser.add_argument('-r', '--path_runtime',
+                    metavar='path_runtime',
+                    type=str,
+                    default="",
+                    help='the path to code to exercise the tool')
+parser.add_argument('--user_tests',
+                    metavar='user_tests',
+                    nargs='*',
+                    default='',
+                    help='user tests to run before measuring coverage')
+parser.add_argument('-t', '--timeout',
+                    metavar='timeout',
+                    type=int,
+                    default=20,
+                    help='user defined time limit for the program to run in seconds')
+parser.add_argument('-c', '--coverage',
+                    metavar='target',
+                    type=int,
+                    default=80,
+                    choices=range(1, 101),
+                    help='target coverage for the generated tests in percentage')
 
 
 def is_primitive(value):
@@ -33,6 +80,13 @@ def is_primitive(value):
         if value in primitive_str:
             return True
     return isinstance(value, primitive)
+
+
+def check_path_valid(project_path: str, module_name: str):
+    if project_path == '' or module_name == '':
+        # TODO: report error if path or module is wrong
+        print("Please enter a valid project path / module name.")
+        exit(-1)
 
 
 def assign_type(config_dict, value):
@@ -79,6 +133,14 @@ class ConfigObject(object):
             os.makedirs(os.path.join(self.dir))
         with open(os.path.join(self.dir, self.name), 'w') as of:
             json.dump(self.config, of)
+        notify("Finish parsing: " + self.module_name + "!",
+               Colors.ColorCode.green)
+        num_funcs = 0
+        for _, val1 in self.config.items():
+            for _, val2 in val1.items():
+                num_funcs += len(val2)
+        notify("Totally parsed: " + str(len(self.config)) + " modules, " + str(
+            num_funcs) + " functions", Colors.ColorCode.green)
 
     def add_module(self, module_info: list):
         [module_name] = module_info
@@ -119,10 +181,12 @@ class ConfigObject(object):
 
             if arg.default != arg.empty and (is_primitive(
                     type(arg.default)) or (
-                    arg.annotation != arg.empty and 
-                    type(arg.annotation) != type and 
-                    type(arg.annotation.__origin__) == type(
-                    typing.List.__origin__))):
+                                                     arg.annotation != arg.empty and
+                                                     type(
+                                                         arg.annotation) != type and
+                                                     type(
+                                                         arg.annotation.__origin__) == type(
+                                                 typing.List.__origin__))):
                 self.add_default_val(
                     [module_name, class_name, func_name, counter,
                      arg_type], arg.default, sub_type)
