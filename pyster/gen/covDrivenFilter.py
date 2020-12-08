@@ -1,5 +1,6 @@
 import os
 import time
+import random
 
 from coverage import coverage
 from coverage.jsonreport import JsonReporter
@@ -50,42 +51,13 @@ class CoverageDrivenFilter:
 
     def generate(self):
         config = self.config
-        test_list = []
-        test_list_exception = []
         cov = coverage(auto_data=True, data_file=".coverage")
         if len(self.user_tests) != 0:
             self.init_user_test_run()
             cov.load()
         self.dump_cov_info(cov, True)
 
-        for module_name, temp in config.config.items():
-            if module_name == config.module_name:
-                for class_name, val in temp.items():
-                    for func_name, _ in val.items():
-                        if self.coverage_val >= self.coverage_target:
-                            break
-                        func = FuncTest(config, [module_name, class_name, func_name])
-                        time_begin = time.time()
-                        while time.time() - time_begin < self.timeout:
-                            if self.coverage_val >= self.coverage_target:
-                                break
-                            cov.start()
-                            test_info = func.generate_random_test()
-                            test = UnitTest(test_info, config)
-                            try:
-                                test.run()
-                                cov.stop()
-                                if self.dump_cov_info(cov):
-                                    self.notify_test_found(test_info)
-                                    test_list.append(test)
-                                    test.dump()
-                            except Exception as e:
-                                test.exception = e
-                                cov.stop()
-                                if self.dump_cov_info(cov):
-                                    self.notify_test_found(test_info)
-                                    test_list_exception.append(test)
-                                    test.dump()
+        test_list, test_list_exception = self.generate_with_time_limit(cov)
 
         generator = TestFileGenerator(config, test_list + test_list_exception)
         generator.dump()
@@ -105,3 +77,67 @@ class CoverageDrivenFilter:
         notify(
             "Coverage after running: " + str(self.coverage_val), Colors.ColorCode.green
         )
+
+    def generate_with_time_limit(self, cov):
+        config = self.config
+        test_list = []
+        test_list_exception = []
+
+        time_begin = time.time()
+        # 1. Run all functions once in the first Trial
+        for class_name, class_val in config.config[config.module_name].items():
+            for func_name, _ in class_val.items():
+                if (
+                    self.coverage_val >= self.coverage_target
+                    or time.time() - time_begin > self.timeout
+                ):
+                    return test_list, test_list_exception
+                self.generate_for_func(
+                    test_list,
+                    test_list_exception,
+                    config.module_name,
+                    class_name,
+                    func_name,
+                    cov,
+                )
+
+        # 2. Randomly select a function and run a trial
+        while time.time() - time_begin < self.timeout:
+            if self.coverage_val >= self.coverage_target:
+                break
+            class_name, class_val = random.choice(
+                list(config.config[config.module_name].items())
+            )
+            func_name, _ = random.choice(list(class_val.items()))
+            self.generate_for_func(
+                test_list,
+                test_list_exception,
+                config.module_name,
+                class_name,
+                func_name,
+                cov,
+            )
+
+        return test_list, test_list_exception
+
+    def generate_for_func(
+        self, test_list, test_list_exception, module_name, class_name, func_name, cov
+    ):
+        func = FuncTest(self.config, [module_name, class_name, func_name])
+        cov.start()
+        test_info = func.generate_random_test()
+        test = UnitTest(test_info, self.config)
+        try:
+            test.run()
+            cov.stop()
+            if self.dump_cov_info(cov):
+                self.notify_test_found(test_info)
+                test_list.append(test)
+                test.dump()
+        except Exception as e:
+            test.exception = e
+            cov.stop()
+            if self.dump_cov_info(cov):
+                self.notify_test_found(test_info)
+                test_list_exception.append(test)
+                test.dump()
