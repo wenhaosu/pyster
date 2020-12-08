@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import sys
 
 from coverage import coverage
 from coverage.jsonreport import JsonReporter
@@ -41,12 +42,12 @@ class CoverageDrivenFilter:
         return self.coverage_val > cov_rate_before
 
     def notify_test_found(self, test_info):
-        notify(
-            "Test found for function: "
-            + str(test_info["class_name"])
-            + "."
-            + str(test_info["func_name"])
+        func_name = (
+            str(test_info["class_name"]) + "." + str(test_info["func_name"])
+            if test_info["class_name"] != ""
+            else str(test_info["func_name"])
         )
+        notify("Test found for function: " + func_name)
         notify("Current coverage: " + str(self.coverage_val))
 
     def generate(self):
@@ -128,7 +129,12 @@ class CoverageDrivenFilter:
         test_info = func.generate_random_test()
         test = UnitTest(test_info, self.config)
         try:
+            # Redirect all intermediate print to devnull
+            normal_out = sys.stdout
+            null_out = open(os.devnull, "w")
+            sys.stdout = null_out
             test.run()
+            sys.stdout = normal_out
             cov.stop()
             if self.dump_cov_info(cov):
                 self.notify_test_found(test_info)

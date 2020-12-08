@@ -55,6 +55,9 @@ class UserModule(object):
                 Colors.ColorCode.yellow,
             )
         self.parse_module(config)
+        print("Finish parsing " + module_name)
+        if module_name == config.module_name and "" not in config.config[module_name]:
+            self.parse_func(config)
 
     def __str__(self, ind: int = 0):
         ret_str = indent(ind) + "== module name: " + self.module_name + "\n"
@@ -63,7 +66,6 @@ class UserModule(object):
         return ret_str
 
     def parse_module(self, config: ConfigObject):
-
         mod_before = []
         mod_after = []
 
@@ -99,3 +101,17 @@ class UserModule(object):
             self.module_classes[c] = UserClass(self.module_name, c)
             config.add_class([self.module_name, c])
             self.module_classes[c].parse_class(config)
+
+    def parse_func(self, config):
+        config.add_class([self.module_name, ""], False)
+        for m in inspect.getmembers(self.mod, inspect.isfunction):
+            if m[1].__module__ == self.module_name:
+                print(m)
+                config.add_func(
+                    [
+                        self.module_name,
+                        "",
+                        m[0],
+                        inspect.signature(m[1]).parameters,
+                    ]
+                )

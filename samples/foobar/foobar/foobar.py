@@ -3,6 +3,16 @@ from typing import List
 from .baz import Baz
 
 
+def hello_world():
+    print("Hello World!")
+
+
+def positive_num(num: int):
+    if num <= 0:
+        return False
+    return True
+
+
 class Foo:
     def __init__(self, info: str):
         self.res = 0
