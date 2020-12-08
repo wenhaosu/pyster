@@ -198,7 +198,7 @@ class ConfigObject(object):
 
             self.config[module_name][class_name][func_name].append({arg_type: ""})
 
-            if arg.default != arg.empty and (
+            if arg.default != arg.empty and arg.default != None and (
                 is_primitive(type(arg.default))
                 or (
                     arg.annotation != arg.empty
