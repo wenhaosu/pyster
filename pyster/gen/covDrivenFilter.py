@@ -109,6 +109,8 @@ class CoverageDrivenFilter:
             class_name, class_val = random.choice(
                 list(config.config[config.module_name].items())
             )
+            if len(class_val.items()) == 0:
+                continue
             func_name, _ = random.choice(list(class_val.items()))
             self.generate_for_func(
                 test_list,
