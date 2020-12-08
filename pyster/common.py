@@ -37,7 +37,7 @@ def notify_init_params(args, stage="init"):
         notify("coverage_target: " + str(args.coverage), Colors.ColorCode.cyan)
 
 
-primitive = (int, str, bool, float)
+primitive = [int, str, bool, float]
 primitive_str = ["int", "str", "bool", "float"]
 
 parser = argparse.ArgumentParser(description="Generate Pyster Config File")
@@ -93,7 +93,7 @@ def is_primitive(value):
     if type(value) == str:
         if value in primitive_str:
             return True
-    return isinstance(value, primitive)
+    return value in primitive
 
 
 def check_path_valid(project_path: str, module_name: str):

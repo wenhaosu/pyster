@@ -151,7 +151,7 @@ class UnitTest(object):
                 args = _obj_dict[obj_name]["args"]
                 dump_init(obj_name, module_name + "." + class_name, args, _init_indent)
 
-        is_class_method = self.class_name != ''
+        is_class_method = self.class_name != ""
         init_indent = 1
         if self.exception:
             init_indent += 1
