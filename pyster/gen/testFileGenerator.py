@@ -13,17 +13,19 @@ class TestFileGenerator:
     def dump_function(self, unittest: UnitTest):
         if unittest.valid:
             self.output.append(
-                'def test_{}_{}():'.format(unittest.func_name.strip('_'),
-                                           unittest.class_name))
+                "def test_{}_{}():".format(
+                    unittest.func_name.strip("_"), unittest.class_name
+                )
+            )
             self.output += unittest.output
-            self.output.append('')
-            self.output.append('')
+            self.output.append("")
+            self.output.append("")
 
     def dump_imports(self):
         for imp in self.imports:
-            self.output.append('import ' + imp)
-        self.output.append('')
-        self.output.append('')
+            self.output.append("import " + imp)
+        self.output.append("")
+        self.output.append("")
 
     def dump(self):
         self.output = []
@@ -32,6 +34,6 @@ class TestFileGenerator:
             self.dump_function(unittest)
 
     def write_to_file(self, file_path):
-        with open(file_path, 'w') as fp:
+        with open(file_path, "w") as fp:
             for line in self.output:
-                fp.write(line + '\n')
+                fp.write(line + "\n")

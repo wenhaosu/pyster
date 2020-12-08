@@ -1,5 +1,5 @@
 # Pyster
-[![Build Status](https://travis-ci.com/WenhaoSu/pyster.svg?branch=main)](https://travis-ci.com/WenhaoSu/pyster)
+[![Build Status](https://travis-ci.com/WenhaoSu/pyster.svg?branch=main)](https://travis-ci.com/WenhaoSu/pyster) [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Pyster is a coverage-driven automatic unit test generator for Python projects.
 

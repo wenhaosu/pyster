@@ -9,7 +9,7 @@ def gen_str(value):
     if isinstance(value, Parameter):
         return value.name
     if isinstance(value, str):
-        return 'r' + '"' + value + '"'
+        return "r" + '"' + value + '"'
     if isinstance(value, list):
         return "[" + ", ".join([gen_str(i) for i in value]) + "]"
     return str(value)
@@ -17,10 +17,10 @@ def gen_str(value):
 
 class UnitTest(object):
     def __init__(self, test_info: dict, config: ConfigObject):
-        self.class_name = test_info['class_name']
-        self.func_name = test_info['func_name']
-        self.init_list = test_info['init_list']
-        self.arg_list = test_info['arg_list']
+        self.class_name = test_info["class_name"]
+        self.func_name = test_info["func_name"]
+        self.init_list = test_info["init_list"]
+        self.arg_list = test_info["arg_list"]
 
         self.ret = None
         self.exception = None
@@ -56,11 +56,11 @@ class UnitTest(object):
         def run_prepare(_obj_names, _obj_dict):
             _instance_dict = {}
             for obj_name in _obj_names:
-                class_name = _obj_dict[obj_name]['class']
-                module_name = _obj_dict[obj_name]['module']
+                class_name = _obj_dict[obj_name]["class"]
+                module_name = _obj_dict[obj_name]["module"]
                 module_obj = importlib.import_module(module_name)
                 class_obj = getattr(module_obj, class_name)
-                _init_args = parse(_obj_dict[obj_name]['args'], _instance_dict)
+                _init_args = parse(_obj_dict[obj_name]["args"], _instance_dict)
                 _instance_dict[obj_name] = class_obj(*_init_args)
             return _instance_dict
 
@@ -85,17 +85,17 @@ class UnitTest(object):
 
         def dump_init(var_name, class_name, args, _init_indent=1):
             if var_name:
-                init_code = var_name + ' = ' + class_name + '('
+                init_code = var_name + " = " + class_name + "("
             else:
-                init_code = class_name + '('
-            init_code += ', '.join([gen_str(arg) for arg in args])
-            init_code += ')'
+                init_code = class_name + "("
+            init_code += ", ".join([gen_str(arg) for arg in args])
+            init_code += ")"
             self.output.append(indent(_init_indent) + init_code)
 
         def dump_assert(function_name, args, ret):
-            call_code = "var." + function_name + '('
-            call_code += ', '.join([gen_str(arg) for arg in args])
-            call_code += ')'
+            call_code = "var." + function_name + "("
+            call_code += ", ".join([gen_str(arg) for arg in args])
+            call_code += ")"
             _assert_code = "assert "
             if is_primitive(ret):
                 _assert_code += call_code
@@ -108,10 +108,10 @@ class UnitTest(object):
                 _assert_code += call_code
                 _assert_code += " is None"
             else:
-                if hasattr(ret, '__module__'):
-                    _assert_code += "isinstance({}, {})". \
-                        format(call_code,
-                               ret.__module__ + '.' + type(ret).__name__)
+                if hasattr(ret, "__module__"):
+                    _assert_code += "isinstance({}, {})".format(
+                        call_code, ret.__module__ + "." + type(ret).__name__
+                    )
                 else:
                     _assert_code += "{} is not None".format(call_code)
 
@@ -119,10 +119,10 @@ class UnitTest(object):
 
         def init_prepare(_obj_names, _obj_dict, init_indent):
             for obj_name in _obj_names:
-                class_name = _obj_dict[obj_name]['class']
-                module_name = _obj_dict[obj_name]['module']
-                args = _obj_dict[obj_name]['args']
-                dump_init(obj_name, module_name + '.' + class_name, args, init_indent)
+                class_name = _obj_dict[obj_name]["class"]
+                module_name = _obj_dict[obj_name]["module"]
+                args = _obj_dict[obj_name]["args"]
+                dump_init(obj_name, module_name + "." + class_name, args, init_indent)
 
         init_indent = 1
         if self.exception:
@@ -133,19 +133,24 @@ class UnitTest(object):
         init_prepare(obj_names, obj_dict, init_indent)
 
         if self.exception:
-            dump_init(None, self.module_name + '.' + self.class_name, arg_list,
-                      init_indent)
+            dump_init(
+                None, self.module_name + "." + self.class_name, arg_list, init_indent
+            )
             self.output.append(indent(1) + "except Exception as e:")
-            self.output.append(indent(2) + "assert isinstance(e, {})".format(
-                self.exception.__class__.__name__))
+            self.output.append(
+                indent(2)
+                + "assert isinstance(e, {})".format(self.exception.__class__.__name__)
+            )
             return
 
-        dump_init("var", self.module_name + '.' + self.class_name, arg_list,
-                  init_indent)
+        dump_init(
+            "var", self.module_name + "." + self.class_name, arg_list, init_indent
+        )
 
         if self.func_name == "__init__":
             assert_code = "assert isinstance(var, {}.{})".format(
-                self.module_name, self.class_name)
+                self.module_name, self.class_name
+            )
             self.output.append(indent(1) + assert_code)
             return
 

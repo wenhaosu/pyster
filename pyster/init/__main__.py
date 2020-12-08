@@ -4,7 +4,7 @@ from .staticParse import UserModule
 from .runtimeParse import RuntimeParser
 from ..common import ConfigObject, notify_init_params, parser, check_path_valid
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parser.parse_args()
     project_path = args.project_path
     module_name = args.module_name

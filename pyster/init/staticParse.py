@@ -19,31 +19,41 @@ class UserClass(object):
             if m is None:
                 return ret_str
             ret_str += indent(ind + 1) + "== callable name: " + m[0] + "\n"
-            ret_str += indent(ind + 2) + "== signature: " + repr(
-                inspect.signature(m[1])) + "\n"
+            ret_str += (
+                indent(ind + 2)
+                + "== signature: "
+                + repr(inspect.signature(m[1]))
+                + "\n"
+            )
         return ret_str
 
     def parse_class(self, config: ConfigObject):
         # Get all function objects from a class
         attrs = getattr(self.class_module, self.class_name)
         for func in inspect.getmembers(attrs, inspect.isfunction):
-            if func[0] == '__init__' or config.module_name == self.module_name:
+            if func[0] == "__init__" or config.module_name == self.module_name:
                 self.class_funcs.append(func)
                 config.add_func(
-                    [self.class_module.__name__, self.class_name, func[0],
-                     inspect.signature(func[1]).parameters])
+                    [
+                        self.class_module.__name__,
+                        self.class_name,
+                        func[0],
+                        inspect.signature(func[1]).parameters,
+                    ]
+                )
 
 
 class UserModule(object):
-    def __init__(self, project_path: str, module_name: str,
-                 config: ConfigObject):
+    def __init__(self, project_path: str, module_name: str, config: ConfigObject):
         self.project_path = project_path
         self.module_name = module_name
         self.module_classes = {}
         self.mod = None
         if len(config.config) != 0:
-            notify("Statically parsing module: " + module_name + "...",
-                   Colors.ColorCode.yellow)
+            notify(
+                "Statically parsing module: " + module_name + "...",
+                Colors.ColorCode.yellow,
+            )
         self.parse_module(config)
 
     def __str__(self, ind: int = 0):
