@@ -198,12 +198,18 @@ class ConfigObject(object):
 
             self.config[module_name][class_name][func_name].append({arg_type: ""})
 
-            if arg.default != arg.empty and arg.default != None and (
-                is_primitive(type(arg.default))
-                or (
-                    arg.annotation != arg.empty
-                    and type(arg.annotation) != type
-                    and type(arg.annotation.__origin__) == type(typing.List.__origin__)
+            if (
+                arg.default != arg.empty
+                and arg.default != None
+                and (
+                    is_primitive(type(arg.default))
+                    or (
+                        arg.annotation != arg.empty
+                        and type(arg.annotation) != type
+                        and hasattr(arg.annotation, "__origin__")
+                        and type(arg.annotation.__origin__)
+                        == type(typing.List.__origin__)
+                    )
                 )
             ):
                 self.add_default_val(
