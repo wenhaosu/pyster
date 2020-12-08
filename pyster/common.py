@@ -149,12 +149,11 @@ class ConfigObject(object):
             json.dump(self.config, of)
         notify("Finish parsing: " + self.module_name + "!", Colors.ColorCode.green)
         num_funcs = 0
-        for _, val1 in self.config.items():
-            for _, val2 in val1.items():
-                num_funcs += len(val2)
+        for _, val in self.config[self.module_name].items():
+            num_funcs += len(val)
         notify(
             "Totally parsed: "
-            + str(len(self.config))
+            + str(len(self.config[self.module_name]))
             + " modules, "
             + str(num_funcs)
             + " functions",
