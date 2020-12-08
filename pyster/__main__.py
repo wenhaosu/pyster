@@ -11,13 +11,14 @@ if __name__ == "__main__":
     timeout = args.timeout
     coverage_target = args.coverage
 
+    pr = " --path_runtime " + path_runtime if path_runtime != "" else ""
+
     os.system(
         "python3 -m pyster.init --project_path "
         + project_path
         + " --module_name "
         + module_name
-        + " --path_runtime "
-        + path_runtime
+        + pr
     )
     os.system(
         "python3 -m pyster.gen --project_path "

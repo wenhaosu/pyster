@@ -62,6 +62,7 @@ parser.add_argument(
     type=str,
     default="",
     help="the path to code to exercise the tool",
+    required=False,
 )
 parser.add_argument(
     "--user_tests",
