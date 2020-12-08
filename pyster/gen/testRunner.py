@@ -34,7 +34,11 @@ class UnitTest(object):
         sys.path.insert(0, self.project_path)
 
         self.test_module = importlib.import_module(self.module_name)
-        self.target_class = getattr(self.test_module, self.class_name)
+        self.target_class = (
+            getattr(self.test_module, self.class_name)
+            if self.class_name != ""
+            else None
+        )
 
         self.output = []
 
@@ -66,12 +70,15 @@ class UnitTest(object):
 
         self.valid = True
 
-        [obj_names, obj_dict, arg_list] = self.init_list
-        instance_dict = run_prepare(obj_names, obj_dict)
-        call_args = parse(arg_list, instance_dict)
-        target_instance = self.target_class(*call_args)
+        if self.class_name != "":
+            [obj_names, obj_dict, arg_list] = self.init_list
+            instance_dict = run_prepare(obj_names, obj_dict)
+            call_args = parse(arg_list, instance_dict)
+            target_instance = self.target_class(*call_args)
 
-        target_func = getattr(target_instance, self.func_name)
+            target_func = getattr(target_instance, self.func_name)
+        else:
+            target_func = getattr(self.test_module, self.func_name)
 
         [obj_names, obj_dict, arg_list] = self.arg_list
         instance_dict = run_prepare(obj_names, obj_dict)
@@ -117,13 +124,15 @@ class UnitTest(object):
 
             self.output.append(indent(1) + _assert_code)
 
-        def init_prepare(_obj_names, _obj_dict, init_indent):
+        def init_prepare(_obj_names, _obj_dict, _init_indent):
             for obj_name in _obj_names:
                 class_name = _obj_dict[obj_name]["class"]
                 module_name = _obj_dict[obj_name]["module"]
                 args = _obj_dict[obj_name]["args"]
-                dump_init(obj_name, module_name + "." + class_name, args, init_indent)
+                dump_init(obj_name, module_name + "." + class_name, args, _init_indent)
 
+        # TODO: Modify dump logic for non-class functions
+        # May add if [self.class_name != ''] somewhere
         init_indent = 1
         if self.exception:
             init_indent += 1
