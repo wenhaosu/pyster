@@ -1,9 +1,6 @@
-import logging
+import os
 
-from .init.staticParse import UserModule
-from .init.runtimeParse import RuntimeParser
-from .gen.covDrivenFilter import CoverageDrivenFilter
-from .common import ConfigObject, notify_init_params, parser, check_path_valid
+from .common import parser
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -14,17 +11,23 @@ if __name__ == "__main__":
     timeout = args.timeout
     coverage_target = args.coverage
 
-    notify_init_params(args, stage="joint")
-    check_path_valid(project_path, module_name)
-
-    config = ConfigObject(project_path, module_name)
-
-    try:
-        module_item = UserModule(project_path, module_name, config)
-        parser = RuntimeParser(config.module_name, config, path_runtime)
-        parser.parse()
-        config.dump_to_config()
-        CoverageDrivenFilter(config, coverage_target, timeout, user_tests).generate()
-
-    except Exception as e:
-        logging.exception(e)
+    os.system(
+        "python3 -m pyster.init --project_path "
+        + project_path
+        + " --module_name "
+        + module_name
+        + " --path_runtime "
+        + path_runtime
+    )
+    os.system(
+        "python3 -m pyster.gen --project_path "
+        + project_path
+        + " --module_name "
+        + module_name
+        + " --user_tests "
+        + user_tests
+        + " -t "
+        + str(timeout)
+        + " -c "
+        + str(coverage_target)
+    )
