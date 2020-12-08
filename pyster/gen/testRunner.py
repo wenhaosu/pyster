@@ -99,12 +99,32 @@ class UnitTest(object):
             init_code += ")"
             self.output.append(indent(_init_indent) + init_code)
 
-        def dump_assert(function_name, args, ret):
-            call_code = "var." + function_name + "("
+        def dump_call(function_name, args, class_method=True, _init_indent=1):
+            if self.exception:
+                call_code = ""
+            else:
+                call_code = "ret = "
+            if class_method:
+                if self.func_name == "__init__":
+                    call_code += "var"
+                    self.output.append(indent(_init_indent) + call_code)
+                    return
+                else:
+                    call_code += "var." + function_name + "("
+            else:
+                call_code += self.module_name + "." + function_name + "("
             call_code += ", ".join([gen_str(arg) for arg in args])
             call_code += ")"
+            self.output.append(indent(_init_indent) + call_code)
+
+        def dump_assert(ret):
             _assert_code = "assert "
-            if is_primitive(ret):
+            call_code = "ret"
+            if self.func_name == "__init__":
+                _assert_code += "isinstance({}, {}.{})".format(
+                    call_code, self.module_name, self.class_name
+                )
+            elif is_primitive(ret):
                 _assert_code += call_code
                 if isinstance(ret, bool):
                     _assert_code += " is "
@@ -131,38 +151,32 @@ class UnitTest(object):
                 args = _obj_dict[obj_name]["args"]
                 dump_init(obj_name, module_name + "." + class_name, args, _init_indent)
 
-        # TODO: Modify dump logic for non-class functions
-        # May add if [self.class_name != ''] somewhere
+        is_class_method = self.class_name != ''
         init_indent = 1
         if self.exception:
             init_indent += 1
             self.output.append(indent(1) + "try:")
 
-        [obj_names, obj_dict, arg_list] = self.init_list
+        if is_class_method:
+            # assign arguments for the class initializer
+            [obj_names, obj_dict, arg_list] = self.init_list
+            init_prepare(obj_names, obj_dict, init_indent)
+            # initialize class instance
+            dump_init(
+                "var", self.module_name + "." + self.class_name, arg_list, init_indent
+            )
+
+        # assign arguments for the target function
+        [obj_names, obj_dict, arg_list] = self.arg_list
         init_prepare(obj_names, obj_dict, init_indent)
+        # call the function
+        dump_call(self.func_name, arg_list, is_class_method, init_indent)
 
         if self.exception:
-            dump_init(
-                None, self.module_name + "." + self.class_name, arg_list, init_indent
-            )
             self.output.append(indent(1) + "except Exception as e:")
             self.output.append(
                 indent(2)
                 + "assert isinstance(e, {})".format(self.exception.__class__.__name__)
             )
-            return
-
-        dump_init(
-            "var", self.module_name + "." + self.class_name, arg_list, init_indent
-        )
-
-        if self.func_name == "__init__":
-            assert_code = "assert isinstance(var, {}.{})".format(
-                self.module_name, self.class_name
-            )
-            self.output.append(indent(1) + assert_code)
-            return
-
-        [obj_names, obj_dict, arg_list] = self.arg_list
-        init_prepare(obj_names, obj_dict, init_indent)
-        dump_assert(self.func_name, arg_list, self.ret)
+        else:
+            dump_assert(self.ret)
