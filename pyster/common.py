@@ -190,7 +190,11 @@ class ConfigObject(object):
                     arg_type = "any"
                 elif type(arg.annotation.__origin__) == type(typing.List.__origin__):
                     arg_type = arg.annotation.__origin__.__name__
-                    sub_type = arg.annotation.__args__[0].__name__
+                    sub_type = (
+                        arg.annotation.__args__[0].__name__
+                        if is_primitive(arg.annotation.__args__[0])
+                        else None
+                    )
                 else:
                     arg_type = "any"
             else:
