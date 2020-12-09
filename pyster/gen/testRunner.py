@@ -174,9 +174,12 @@ class UnitTest(object):
 
         if self.exception:
             self.output.append(indent(1) + "except Exception as e:")
+            exp_name = self.exception.__class__.__name__
+            if hasattr(self.exception, "__module__"):
+                exp_name = self.exception.__module__ + '.' + exp_name
             self.output.append(
                 indent(2)
-                + "assert isinstance(e, {})".format(self.exception.__class__.__name__)
+                + "assert isinstance(e, {})".format(exp_name)
             )
         else:
             dump_assert(self.ret)
