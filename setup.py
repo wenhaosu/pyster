@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pyster", # Replace with your own username
+    name="pyster-python", # Replace with your own username
     version="0.0.1",
     author="Wenhao Su, Zhen Yu",
     author_email="wenhaos3@illinois.edu",
