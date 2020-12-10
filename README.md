@@ -1,5 +1,5 @@
 # Pyster
-[![Build Status](https://travis-ci.com/WenhaoSu/pyster.svg?branch=main)](https://travis-ci.com/WenhaoSu/pyster) [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Coverage Status](https://coveralls.io/repos/github/WenhaoSu/pyster/badge.svg?branch=main)](https://coveralls.io/github/WenhaoSu/pyster?branch=main)
+[![Build Status](https://travis-ci.com/WenhaoSu/pyster.svg?branch=main)](https://travis-ci.com/WenhaoSu/pyster) [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Coverage Status](https://coveralls.io/repos/github/WenhaoSu/pyster/badge.svg?branch=main)](https://coveralls.io/github/WenhaoSu/pyster?branch=main) [![PyPI version](https://badge.fury.io/py/pyster-python.svg)](https://badge.fury.io/py/pyster-python)
 
 Pyster is a coverage-driven automatic unit test generator for Python projects.
 
