@@ -11,3 +11,8 @@ install:
 
 script:
   - pytest tests/test*
+
+after_success:
+  - pip install coveralls
+  - coverage run --source=mypkg -m pytest tests/
+  - coveralls
