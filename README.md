@@ -33,19 +33,17 @@ python3 -m pyster \
   --coverage <coverage-target>
 ```
 
-## Test on existing samples
+## Test
 ```bash
-git submodule update --init --recursive
-cd samples
-./applyPatch.sh
+pytest tests
 ```
 
 ## Sample execution
 ```bash
 # Phase 1
-python3 -m pyster.init --project_path samples/foobar --module_name foobar.foobar
+python3 -m pyster.init --project_path tests/foobar --module_name foobar.foobar
 # Phase 2
-python3 -m pyster.gen --project_path samples/foobar --module_name foobar.foobar -t 1 -c 80
+python3 -m pyster.gen --project_path tests/foobar --module_name foobar.foobar -t 1 -c 80
 ```
 
 ## Concept
