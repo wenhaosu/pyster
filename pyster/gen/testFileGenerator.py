@@ -1,5 +1,6 @@
 from .testRunner import UnitTest
 from ..common import ConfigObject
+from collections import defaultdict
 
 
 class TestFileGenerator:
@@ -9,14 +10,18 @@ class TestFileGenerator:
         self.project_path = config.project_path
         self.imports = list(config.config.keys())
         self.unittests = unittest_list
+        self.func_counter = defaultdict(lambda : 0)
 
     def dump_function(self, unittest: UnitTest):
         if unittest.valid:
+            key = '.'.join([unittest.module_name, unittest.class_name, unittest.func_name])
+            class_name = '_' + unittest.class_name if unittest.class_name else ''
             self.output.append(
-                "def test_{}_{}():".format(
-                    unittest.func_name.strip("_"), unittest.class_name
+                "def test_{}{}_{}():".format(
+                    unittest.func_name.strip("_"), class_name, self.func_counter[key]
                 )
             )
+            self.func_counter[key] += 1
             self.output += unittest.output
             self.output.append("")
             self.output.append("")
