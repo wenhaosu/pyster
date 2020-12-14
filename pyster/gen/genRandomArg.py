@@ -10,6 +10,8 @@ def check_primitive(value):
 
 
 def gen_random_primitive(arg_type: str, arg_len=10):
+    if random.randint(1, 10) <= 3:
+            return None
     if arg_type == "int":
         if random.randint(1, 10) <= 3:
             return 0

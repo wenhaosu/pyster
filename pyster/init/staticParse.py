@@ -106,7 +106,6 @@ class UserModule(object):
         config.add_class([self.module_name, ""], False)
         for m in inspect.getmembers(self.mod, inspect.isfunction):
             if m[1].__module__ == self.module_name:
-                print(m)
                 config.add_func(
                     [
                         self.module_name,
