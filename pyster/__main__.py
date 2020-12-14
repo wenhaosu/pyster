@@ -26,7 +26,7 @@ if __name__ == "__main__":
         + " --module_name "
         + module_name
         + " --user_tests "
-        + user_tests
+        + " ".join(t for t in user_tests)
         + " -t "
         + str(timeout)
         + " -c "
