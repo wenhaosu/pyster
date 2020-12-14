@@ -2,16 +2,19 @@ name: lint_python
 on: [pull_request, push]
 jobs:
   lint_python:
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - run: pip install black codespell flake8 isort pytest pyupgrade
       - run: black --check . || true
-      - run: codespell --quiet-level=2 || true  # --ignore-words-list="" --skip=""
+      - run: codespell --quiet-level=2  # --ignore-words-list="" --skip=""
       - run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
       - run: isort --profile black . || true
-      - run: pip install -r requirements.txt || true
-      - run: pytest . || true
-      - run: pytest --doctest-modules . || true
+      - run: pip install pytest-cov -r requirements.txt
+      - run: pytest --cov=pyster/
+      - run: coveralls
       - run: shopt -s globstar && pyupgrade --py36-plus **/*.py || true
