@@ -46,8 +46,24 @@ python3 -m pyster.init --project_path tests/foobar --module_name foobar.foobar
 python3 -m pyster.gen --project_path tests/foobar --module_name foobar.foobar -t 1 -c 80
 ```
 
-## Concept
-* Use built-in Python functions to obtain all methods in a Python class.
-* According to the methods input, randomly generate an object instance and function arguments, with special inputs (`0`, `-1` for integers, `[]` for lists and `None` for objects also into consideration). Use `coverage.py` third-party library to get the coverage rate increment after calling the randomly generated function call.
-* Repeat step 2 until we reached 100% coverage rate or the target coverage rate from user input, or the specified timeout is reached.
-* Dump all auto-generated unit tests into a test file and save it into the project test suite directory, together with a before/after coverage rate of the class.
+## Pyster Logic
+
+![pyster-logic](https://i.imgur.com/dSWnWbF.png)
+
+The graph above is a high-level summary of Pyster's workflow. 
+
+Pyster contains two phases:
+- **Phase 1:** Type Analysis (`init` stage)
+    - Input:
+        - `project_path`: Absolute/relative path to project folder
+        - `module_name`: Name of Python module for generating tests
+        - `path_runtime`(optional): User-written Python file (e.g. existing test files) that makes use of functions in the selected module.
+    - Output:
+        - `module_name.json`: A configuration file containing all information used to randomly generate function calls. (All function signatures and their argument types, constructor of user-defined classes, etc.) This file can be further modified by user to provide more detailed type-related information.
+- **Phase 2:** Test Generation (`gen` stage)
+    - Input:
+        - `timeout`: Pyster terminates after `timeout` seconds.
+        - `coverage`: Pyster terminates after test cases reach `coverage` code coverage rate.
+        - `user_tests`(optional): If current module already has test suite, `user_tests` can be provided as a list of files so that Pyster will not generate tests covering lines already tested.
+    - Output:
+        - A runnable `module_nameTest.py` file containing all automatically generated unit tests as well as command-line output of coverage report.
