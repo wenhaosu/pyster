@@ -235,4 +235,10 @@ class ConfigObject(object):
 
     def add_type_override(self, over_info):
         [module_name, class_name, func_name, arg_pos, arg_obj] = over_info
+        if module_name not in self.config:
+            return
+        if class_name not in self.config[module_name]:
+            return
+        if func_name not in self.config[module_name][class_name]:
+            return
         assign_type(self.config[module_name][class_name][func_name][arg_pos], arg_obj)
