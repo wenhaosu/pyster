@@ -13,14 +13,10 @@ class RuntimeParser(object):
         self.config = config
 
     def _handle_call(self, code, locals_dict, args):
-        print(code.co_name)
-        print(args)
         func_name = code.co_name
         params = list(code.co_varnames)[: code.co_argcount]
         args_dict = dict((p, locals_dict[p]) for p in params)
         args_type = {k: type(v) for k, v in args_dict.items()}
-        print(args_type)
-        print()
 
         if "self" not in args_dict:
             return
